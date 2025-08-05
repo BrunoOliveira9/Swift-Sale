@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PDV - Sistema de Vendas</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: #f4f4f4;
+    }
+
+    header {
+      background-color: #333;
+      color: #fff;
+      padding: 15px;
+      text-align: center;
+    }
+
+    nav {
+      display: flex;
+      background-color: #444;
+      padding: 10px;
+      justify-content: center;
+    }
+
+    nav button {
+      background-color: #666;
+      color: white;
+      border: none;
+      margin: 0 10px;
+      padding: 10px 20px;
+      cursor: pointer;
+    }
+
+    nav button:hover {
+      background-color: #888;
+    }
+
+    section {
+      display: none;
+      padding: 20px;
+    }
+
+    section.active {
+      display: block;
+    }
+
+    footer {
+      background-color: #333;
+      color: white;
+      text-align: center;
+      padding: 10px;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Sistema PDV</h1>
+    <p>Controle de vendas, estoque, clientes e caixa</p>
+  </header>
+
+  <nav>
+    <button onclick="mostrar('vendas')">Vendas</button>
+    <button onclick="mostrar('estoque')">Estoque</button>
+    <button onclick="mostrar('clientes')">Clientes</button>
+    <button onclick="mostrar('caixa')">Caixa</button>
+  </nav>
+
+  <main>
+    <section id="vendas" class="active">
+      <h2>Vendas</h2>
+      <p>Aqui será exibido o módulo de vendas (carrinho, produtos, total etc).</p>
+    </section>
+
+    <section id="estoque">
+      <h2>Estoque</h2>
+      <p>Aqui será exibido o controle de produtos em estoque.</p>
+    </section>
+
+    <section id="clientes">
+      <h2>Clientes</h2>
+      <p>Aqui será exibido o cadastro e consulta de clientes.</p>
+    </section>
+
+    <section id="caixa">
+      <h2>Caixa</h2>
+      <p>Aqui será exibido o controle financeiro e fechamento de caixa.</p>
+    </section>
+  </main>
+
+  <footer>
+    &copy; 2025 PDV - Sistema de Vendas
+  </footer>
+
+  <script>
+    function mostrar(secao) {
+      document.querySelectorAll("section").forEach((el) => {
+        el.classList.remove("active");
+      });
+      document.getElementById(secao).classList.add("active");
+    }
+  </script>
+
+</body>
+</html>
