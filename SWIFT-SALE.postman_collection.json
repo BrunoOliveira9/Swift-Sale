@@ -1,0 +1,154 @@
+{
+	"info": {
+		"_postman_id": "daca324c-973f-4cfd-94e9-e81be60706f9",
+		"name": "SWIFT-SALE",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23331230",
+		"_collection_link": "https://martian-meadow-564543.postman.co/workspace/My-Workspace~ebe4c05b-5a9b-49c4-8375-45f21ca15a19/collection/23331230-daca324c-973f-4cfd-94e9-e81be60706f9?action=share&source=collection_link&creator=23331230"
+	},
+	"item": [
+		{
+			"name": "PRODUTOS",
+			"item": [
+				{
+					"name": "Listar produtos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/produtos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"produtos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar produtos por id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/produtos/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"produtos",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Atualizar produto",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nome\": \"Produto Teste hygor\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/produtos/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"produtos",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cadastrar produto",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"codigo_barras\": \"1234567890w123\",\n    \"nome\": \"Produto Teste 1\",\n    \"descricao\": \"Descrição do produto teste 1\",\n    \"categoria\": \"Categoria A\",\n    \"unidade_medida\": \"UNIDADE\",\n    \"preco_venda\": \"10\",\n    \"preco_custo\": \"5\",\n    \"estoque_atual\": 100,\n    \"estoque_minimo\": 10,\n    \"created_at\": \"2025-08-06T02:54:56.540Z\",\n    \"updated_at\": \"2025-08-06T02:54:56.540Z\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/produtos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"produtos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deleta produto",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"codigo_barras\": \"1234567890w123\",\n    \"nome\": \"Produto Teste 1\",\n    \"descricao\": \"Descrição do produto teste 1\",\n    \"categoria\": \"Categoria A\",\n    \"unidade_medida\": \"UNIDADE\",\n    \"preco_venda\": \"10\",\n    \"preco_custo\": \"5\",\n    \"estoque_atual\": 100,\n    \"estoque_minimo\": 10,\n    \"created_at\": \"2025-08-06T02:54:56.540Z\",\n    \"updated_at\": \"2025-08-06T02:54:56.540Z\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/produtos/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"produtos",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "AUTH",
+			"item": [
+				{
+					"name": "login",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

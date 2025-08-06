@@ -1,11 +1,13 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt"
-import { LoginDTO } from "../dto/login.dto";
+import { LoginDto } from "../dto/login.dto";
+import { PrismaService } from "../../prisma/prisma.service";
 
 @Injectable()
 export class AuthenticationService {
     constructor(
         private readonly _jwtService: JwtService,
+        private prisma: PrismaService
     ) { }
     
     async createToken(id: number) {
@@ -17,23 +19,23 @@ export class AuthenticationService {
             return this._jwtService.verify(token.replace("Bearer ",""));
         } catch (err) {
             return false;
-        }
+        } 
     }
 
-    async login(data: LoginDTO) {
-        const { username, password } = data;
-        // só verificação simples para testes (essa lógica vai ser substituida por banco de dados
-        const logged: boolean = username === 'eduardo.abreu' && password === 'passwordMock';
+    async login(data: LoginDto) {
+        const user = await this.prisma.cad_usuario.findUnique({
+            where: {
+                username: data.username,
+                password: data.password
+            },
+        });
 
-        if (!logged) {
-            throw new UnauthorizedException('Credenciais inválidas');
+        if (!user || user.password !== data.password) {
+            throw new UnauthorizedException('Usuário ou senha inválidos');
         }
 
-        // id será obtido do banco de dados após a autenticação bem-sucedida
-        const userId = 1; // simulando o ID do usuário
-        const token = await this.createToken(userId);
-
-        return { auth: true, token };
+        const token = await this.createToken(user.id);
+        return { token };
     }
 
 }

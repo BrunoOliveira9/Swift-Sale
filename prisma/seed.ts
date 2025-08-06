@@ -30,6 +30,14 @@ async function main() {
     ],
   });
 
+    await prisma.cad_usuario.create({
+      data: {
+        nome: 'Adminstrador',
+        username: 'admin',
+        password: 'admin123',
+      },
+    });
+
   console.log('Dados de teste inseridos com sucesso!');
 }
 
