@@ -1,20 +1,18 @@
-import './App.css';
-import logo from './SW.svg';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+
+import Login from "./login/Login";
+import Inicio from "./inicio/Inicio";
 
 function App() {
   return (
-    <div className="login-container">
-      <div className="login-box">
-        <img src={logo} alt="Swift Sale Logo" className="logo" />
-                
-
-        <form>
-          <input type="text" placeholder="Usuário" required />
-          <input type="password" placeholder="Senha" required />
-          <button type="submit">Entrar</button>
-        </form>
-      </div>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/inicio" element={<Inicio />} />
+      </Routes>
+    </Router>
   );
 }
 

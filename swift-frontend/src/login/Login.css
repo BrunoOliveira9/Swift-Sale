@@ -1,8 +1,7 @@
-body, html {
+body {
   margin: 0;
-  padding: 0;
-  font-family: sans-serif;
-  background-color: #ffffff;
+  font-family: Arial, sans-serif;
+  background-color: #f2f2f2;
 }
 
 .login-container {
@@ -13,42 +12,70 @@ body, html {
 }
 
 .login-box {
+  
+  padding: 40px 30px;
+  border-radius: 8px;
   text-align: center;
-  border: 1px solid #ffffff;
-  padding: 40px;
-  border-radius: 0px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
 }
 
-.logo {
-  width: 200px;
-  margin-bottom: 0px;
+.login-logo {
+  width: 170px;
+  margin-bottom: 20px;
 }
 
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 20px;
-}
-
-input {
-  padding: 10px;
-  border: 1px solid #bbb;
-  border-radius: 4px;
+.login-subtitle {
   font-size: 16px;
+  color: #555;
+  margin-bottom: 20px;
 }
 
-button {
-  background-color: #0c0d0e;
+.login-instruction {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+.login-input {
+  width: 100%;
+  padding: 10px;
+  margin: 6px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #ffffcc;
+  box-sizing: border-box;
+}
+
+.login-button {
+  width: 100%;
+  padding: 10px;
+  background-color: #4d94d4;
   color: white;
-  padding: 12px;
   border: none;
   border-radius: 4px;
-  font-size: 16px;
+  margin-top: 10px;
   cursor: pointer;
+  font-weight: bold;
 }
 
-button:hover {
-  background-color: #0056b3;
+.login-button:hover {
+  background-color: #357ab8;
+}
+
+.login-remember {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  justify-content: center;
+}
+
+.login-footer {
+  margin-top: 20px;
+  font-size: 12px;
+  color: #aaa;
 }
