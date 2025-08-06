@@ -23,6 +23,7 @@ export class AuthenticationService {
     }
 
     async login(data: LoginDto) {
+        console.log('Login data:', data);
         const user = await this.prisma.cad_usuario.findUnique({
             where: {
                 username: data.username,
