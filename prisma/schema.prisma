@@ -37,6 +37,13 @@ model movimentacao_estoque {
   created_at   DateTime           @default(now())
 }
 
+model cad_usuario {
+  id          Int                 @id @default(autoincrement())
+  nome        String
+  username    String              @unique
+  password    String              
+}
+
 enum unidade_medida {
   UNIDADE
   KG
