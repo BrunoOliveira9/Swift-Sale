@@ -1,7 +1,6 @@
-import './App.css';
-import logo from './SW.svg';
+import logo from '../SW.svg';
 
-function App() {
+function Login() {
   return (
     <div className="login-container">
       <div className="login-box">
@@ -18,4 +17,4 @@ function App() {
   );
 }
 
-export default App;
+export default Login;
