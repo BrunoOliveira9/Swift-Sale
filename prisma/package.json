@@ -1,0 +1,12 @@
+{
+  "scripts": {
+    "seed": "ts-node seed.ts"
+  },
+  "devDependencies": {
+    "@prisma/client": "^6.13.0",
+    "prisma": "^6.13.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.0.0",
+    "@types/node": "^20.0.0"
+  }
+}

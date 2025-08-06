@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model cad_produto {
+  id             Int                      @id @default(autoincrement())
+  codigo_barras  String                   @unique
+  nome           String
+  descricao      String?
+  categoria      String
+  unidade_medida unidade_medida
+  preco_venda    Decimal                  @db.Decimal(10, 2)
+  preco_custo    Decimal                  @db.Decimal(10, 2)
+  estoque_atual  Int                      @default(0)
+  estoque_minimo Int                      @default(0)
+
+  movimentacoes  movimentacao_estoque[]
+
+  created_at     DateTime                 @default(now())
+  updated_at     DateTime                 @updatedAt
+}
+
+model movimentacao_estoque {
+  id           Int                @id @default(autoincrement())
+  produto      cad_produto        @relation(fields: [id_produto], references: [id])
+  id_produto   Int
+  tipo         tipo_movimentacao
+  quantidade   Int
+  data         DateTime           @default(now())
+  observacao   String?
+
+  created_at   DateTime           @default(now())
+}
+
+enum unidade_medida {
+  UNIDADE
+  KG
+  LITRO
+  METRO
+  CAIXA
+  PACOTE
+  OUTRO
+}
+
+enum tipo_movimentacao {
+  ENTRADA
+  SAIDA
+}
