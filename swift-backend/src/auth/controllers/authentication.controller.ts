@@ -11,7 +11,7 @@ export class AuthenticationController {
    @Post('login')
    @Public()   
    async login(@Body() data: LoginDto) {
-    console.log('Controller recebeu:', data);
+    //console.log('Controller recebeu:', data);
     return this._authenticationService.login(data)
    }
 
