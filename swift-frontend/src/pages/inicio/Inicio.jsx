@@ -10,7 +10,7 @@ function Inicio() {
   };
 
   return (
-          <div className="container">
+    <div className="container-principal">
       {!menuAberto && (
         <button className="open-menu-button" onClick={toggleMenu}>
           +

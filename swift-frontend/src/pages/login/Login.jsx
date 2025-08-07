@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./Login.css";
 import Logo from "../../pages/inicio/SW.svg";
 import { login } from "../../services/auth/authentication-service.ts";
+import showToast from "../../components/toast/Toast.jsx"
 
 function Login() {
   const navigate = useNavigate();
@@ -13,16 +14,18 @@ function Login() {
   async function signIn() {
     try {
       const response = await login(username, password);
-      console.log("Login realizado:", response);
-      navigate("/inicio");
+      
+      showToast('success', 'Login realizado', 'Bem-vindo ao sistema!');
+
+      setTimeout(() => {
+        navigate("/inicio");
+      }, 400);
     } catch (error) {
-      console.error("Erro ao fazer login:", error.message);
-      alert("Usuário ou senha inválidos");
+      showToast('error', 'Erro de login', 'Usuário ou senha inválidos');
     }
   }
 
   const handleLogin = (e) => {
-    //definindo handleLogin
     e.preventDefault(); 
     
     signIn();
