@@ -2,11 +2,13 @@ import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt"
 import { LoginDto } from "../dto/login.dto";
 import { PrismaService } from "../../prisma/prisma.service";
+import { HashService } from "src/core/crypto/hash.service";
 
 @Injectable()
 export class AuthenticationService {
     constructor(
         private readonly _jwtService: JwtService,
+        private readonly _hashService: HashService,
         private prisma: PrismaService
     ) { }
     
@@ -30,11 +32,15 @@ export class AuthenticationService {
         const user = await this.prisma.cad_usuario.findUnique({
             where: {
                 username: data.username,
-                password: data.password
             },
         });
 
-        if (!user || user.password !== data.password) {
+        if (!user) {
+            throw new UnauthorizedException('Usuário ou senha inválidos');
+        }
+
+        const isPasswordValid = await this._hashService.compararSenha(data.password, user.password);
+        if (!isPasswordValid) {
             throw new UnauthorizedException('Usuário ou senha inválidos');
         }
 
