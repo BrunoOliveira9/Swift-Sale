@@ -19,13 +19,15 @@ function Login() {
 
         <p className="login-instruction">Informe usuário e senha para entrar no sistema.</p>
 
+      <form onSubmit={handleLoginSubmit}>
         <input type="text" placeholder="Usuário" className="login-input" />
         <input type="password" placeholder="Senha" className="login-input" />
 
-        {/* Botão Login com evento onClick */}
-        <button className="login-button" onClick={handleLoginClick}>
+        {/* Botão Login tipo submit*/}
+        <button type="submit" className="login-button">
           Login
         </button>
+       </form>
 
         <div className="login-remember">
           <input type="checkbox" id="remember" />
