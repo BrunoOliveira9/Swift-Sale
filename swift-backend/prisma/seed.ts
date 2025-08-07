@@ -1,6 +1,14 @@
 const { PrismaClient } = require('@prisma/client');
+import * as bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
+
+const saltRounds = 12; // Ideal para aplicações de produção
+
+// Função para hash de senha
+async function hashPassword(password: string): Promise<string> {
+  return await bcrypt.hash(password, saltRounds);
+}
 
 async function main() {
   await prisma.cad_produto.createMany({
@@ -34,7 +42,7 @@ async function main() {
       data: {
         nome: 'Adminstrador',
         username: 'admin',
-        password: 'admin123',
+        password: await hashPassword('admin123'),
       },
     });
 

@@ -4,6 +4,7 @@ import { AuthenticationController } from './controllers/authentication.controlle
 import { AuthenticationService } from './services/authentication.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { CryptoModule } from 'src/core/crypto/crypto.module';
 
 @Module({
   imports: [ConfigModule,
@@ -14,7 +15,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         secret: configService.get<string>('TOKEN_JWT', 'valor_padrao'),
         signOptions: { expiresIn: '1h' },
       }),
-    }),],
+    }),
+    CryptoModule,
+  ],
   controllers: [AuthenticationController],
   providers: [AuthenticationService, PrismaService],
   exports: [AuthenticationService],
