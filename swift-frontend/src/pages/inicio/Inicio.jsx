@@ -10,14 +10,22 @@ function Inicio() {
   };
 
   return (
-    <div className="container">
-      {/* Botão de abrir menu */}
-      <button className="toggle-button" onClick={toggleMenu}>
-        {menuAberto ? '×' : '+'}
-      </button>
+          <div className="container">
+      {!menuAberto && (
+        <button className="open-menu-button" onClick={toggleMenu}>
+          +
+        </button>
+      )}
 
       {/* Menu lateral */}
-      <aside className={`sidebar ${menuAberto ? 'aberto' : 'fechado'}`}>
+      <aside className={`sidebar ${menuAberto ? 'aberto' : ''}`}>
+        
+   
+        <button className="close-menu-button" onClick={toggleMenu}>
+          ×
+        </button>
+        
+              
         <h2 className="sidebar-title">Menu</h2>
         <div className="menu-section">
           <h3>Manutenção</h3>

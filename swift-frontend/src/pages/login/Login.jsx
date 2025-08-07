@@ -21,12 +21,20 @@ function Login() {
     }
   }
 
+  const handleLogin = (e) => {
+    //definindo handleLogin
+    e.preventDefault(); 
+    
+    signIn();
+  };
+
   return (
     <div className="login-container">
       <div className="login-box">
         <img src={Logo} alt="Logo" className="login-logo" />
 
-        <form onSubmit={(e) => e.preventDefault()}>
+       
+        <form onSubmit={handleLogin}>
           <h2 className="login-subtitle">Sistema de PDV</h2>
 
           <p className="login-instruction">Informe usuário e senha para entrar no sistema.</p>
@@ -47,7 +55,8 @@ function Login() {
             onChange={(e) => setPassword(e.target.value)}
           />
 
-          <button className="login-button" type="button" onClick={signIn}>
+        
+          <button className="login-button" type="submit">
             Login
           </button>
         </form>
