@@ -1,8 +1,8 @@
-import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
-import Login from "./login/Login";
-import Inicio from "./inicio/Inicio";
+import Login from "./pages/login/Login";
+import Inicio from "./pages/inicio/Inicio";
+import './styles/global.css';
 
 function App() {
   return (
