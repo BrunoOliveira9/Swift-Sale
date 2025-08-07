@@ -14,16 +14,19 @@ export class AuthenticationService {
         return this._jwtService.sign({ id })
     }
 
-    async checkTokenJwt(token: string) {
+    async valideToken(token: string): Promise<boolean> {
         try {
-            return this._jwtService.verify(token.replace("Bearer ",""));
+        const payload = this._jwtService.verify(token);
+        // console.log('Payload:', payload);
+        return true;
         } catch (err) {
-            return false;
-        } 
+        throw new UnauthorizedException('Token inválido ou expirado');
+        }
     }
 
     async login(data: LoginDto) {
-        console.log('Login data:', data);
+        // console.log('Login data:', data);
+
         const user = await this.prisma.cad_usuario.findUnique({
             where: {
                 username: data.username,
@@ -38,5 +41,4 @@ export class AuthenticationService {
         const token = await this.createToken(user.id);
         return { token };
     }
-
 }
