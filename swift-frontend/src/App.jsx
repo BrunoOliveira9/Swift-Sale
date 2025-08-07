@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import Login from "./pages/login/Login";
 import Inicio from "./pages/inicio/Inicio";
 import './styles/global.css';
+import 'simple-notify/dist/simple-notify.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
   return (
