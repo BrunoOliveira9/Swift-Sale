@@ -1,12 +1,20 @@
 import React, { useState } from 'react';
 import './Inicio.css';
-import logo from './SW.svg'; // ajuste o caminho se necessário
+import logo from './SW.svg';
+import { useAuth } from '../../services/auth/auth-context.service.tsx';
+import showToast from '../../components/toast/Toast.jsx';
 
 function Inicio() {
   const [menuAberto, setMenuAberto] = useState(false);
+  const { logout } = useAuth();
 
   const toggleMenu = () => {
     setMenuAberto(!menuAberto);
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    showToast('info', 'Sessão encerrada', 'Você foi desconectado com sucesso.');
   };
 
   return (
@@ -19,13 +27,10 @@ function Inicio() {
 
       {/* Menu lateral */}
       <aside className={`sidebar ${menuAberto ? 'aberto' : ''}`}>
-        
-   
         <button className="close-menu-button" onClick={toggleMenu}>
           ×
         </button>
         
-              
         <h2 className="sidebar-title">Menu</h2>
         <div className="menu-section">
           <h3>Manutenção</h3>
@@ -40,16 +45,19 @@ function Inicio() {
             <li><button>Nota Fiscal</button></li>
           </ul>
         </div>
+
+        <div className="menu-section logout">
+          <button onClick={handleLogout} className="logout-button">
+            Logout
+          </button>
+        </div>
       </aside>
 
-      {/* Conteúdo principal */}
       <main className="main-content">
-        {/* Cabeçalho com logo centralizado */}
         <div className="top-header">
           <img src={logo} alt="Swift Logo" className="logo-centered" />
         </div>
 
-        {/* Botões */}
         <div className="buttons-section">
           <div className="buttons-grid">
             <button className="grid-button">Cadastro</button>

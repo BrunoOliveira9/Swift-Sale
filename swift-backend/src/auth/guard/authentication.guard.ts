@@ -19,17 +19,15 @@ export class AuthGuard implements CanActivate {
         if (isPublic) {
           return true; // Permite acesso sem autenticação
         }
-        // Aqui entra sua lógica de autenticação (por token, etc.)  
+        
+        // pega o token do cookie
         const request = context.switchToHttp().getRequest();
-        const authorization = request.headers.authorization;
-        // console.log('Authorization Header:', authorization);
-        // console.log('Request Headers:', request.headers);
+        const token = request.cookies['token'];
 
-        if (!authorization) {
+        if (!token) {
           throw new UnauthorizedException("Token não informado");
         }
 
-        const token = authorization.trim();
         const isValid = await this.authService.valideToken(token);
         if (!isValid) {
           throw new ForbiddenException("Token inválido");

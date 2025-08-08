@@ -9,6 +9,8 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.11.0",
     "bootstrap": "^5.3.7",
+    "dotenv": "^17.2.1",
+    "joi": "^18.0.0",
     "react": "^19.1.1",
     "react-bootstrap": "^2.10.10",
     "react-dom": "^19.1.1",
@@ -18,7 +20,8 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "validate-env": "node src/validation-variables.js",
+    "start": "npm run validate-env && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -40,5 +43,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/node": "^24.2.0"
   }
 }
