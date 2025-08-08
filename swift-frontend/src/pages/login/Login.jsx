@@ -1,42 +1,32 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import "./Login.css";
 import Logo from "../../pages/inicio/SW.svg";
-import { login } from "../../services/auth/authentication-service.ts";
-import showToast from "../../components/toast/Toast.jsx"
+import { useAuth } from "../../services/auth/auth-context.service.tsx";
+import showToast from "../../components/toast/Toast.jsx";
 
 function Login() {
-  const navigate = useNavigate();
-
+  const { login } = useAuth();
+  
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  async function signIn() {
-    try {
-      const response = await login(username, password);
-      
+  async function handleLogin(e) {
+    e.preventDefault(); 
+    
+    const loginSuccess = await login({ username, password });
+    
+    if (loginSuccess) {
       showToast('success', 'Login realizado', 'Bem-vindo ao sistema!');
-
-      setTimeout(() => {
-        navigate("/inicio");
-      }, 400);
-    } catch (error) {
+    } else {
       showToast('error', 'Erro de login', 'Usuário ou senha inválidos');
     }
   }
-
-  const handleLogin = (e) => {
-    e.preventDefault(); 
-    
-    signIn();
-  };
 
   return (
     <div className="login-container">
       <div className="login-box">
         <img src={Logo} alt="Logo" className="login-logo" />
 
-       
         <form onSubmit={handleLogin}>
           <h2 className="login-subtitle">Sistema de PDV</h2>
 
@@ -58,7 +48,6 @@ function Login() {
             onChange={(e) => setPassword(e.target.value)}
           />
 
-        
           <button className="login-button" type="submit">
             Login
           </button>

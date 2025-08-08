@@ -5,21 +5,26 @@ import { AuthenticationService } from './services/authentication.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CryptoModule } from 'src/core/crypto/crypto.module';
+import { HashService } from 'src/core/crypto/hash.service';
 
 @Module({
-  imports: [ConfigModule,
+  imports: [
+    ConfigModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => ({
-        secret: configService.get<string>('TOKEN_JWT', 'valor_padrao'),
-        signOptions: { expiresIn: '1h' },
-      }),
+      useFactory: (configService: ConfigService) => {
+        const secret = configService.get<string>('JWT_SECRET');
+        
+        return {
+          secret,
+          signOptions: { expiresIn: '1h' },
+        };
+      },
     }),
-    CryptoModule,
   ],
   controllers: [AuthenticationController],
-  providers: [AuthenticationService, PrismaService],
+  providers: [AuthenticationService, PrismaService, HashService],
   exports: [AuthenticationService],
 })
 export class AuthenticationModule {}
