@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
+import { api } from '../api';
 
 interface Login {
     username: string;
@@ -13,16 +14,6 @@ interface AuthContextType {
   login: (data: Login) => Promise<boolean>;
   logout: () => Promise<void>;
 }
-
-// @ts-ignore
-const backendHost = process.env.REACT_APP_HOST_BACKEND;
-// @ts-ignore
-const backendPort = process.env.REACT_APP_PORT_BACKEND;
-
-const api = axios.create({
-  baseURL: `http://${backendHost}:${backendPort}`,
-  withCredentials: true,
-});
 
 const defaultAuthContextValue: AuthContextType = {
   isAuthenticated: false,
