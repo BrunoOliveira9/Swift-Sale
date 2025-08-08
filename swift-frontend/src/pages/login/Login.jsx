@@ -13,7 +13,12 @@ function Login() {
 
   async function signIn() {
     try {
-      const response = await login(username, password);
+      const credentials = {
+        username: username,
+        password: password
+      };
+      
+      await login(credentials);
       
       showToast('success', 'Login realizado', 'Bem-vindo ao sistema!');
 
