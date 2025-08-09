@@ -26,11 +26,15 @@ export class AuthenticationService {
         const user = await this.prisma.cad_usuario.findUnique({
             where: {
                 username: data.username,
-                password: data.password
             },
         });
 
-        if (!user || user.password !== data.password) {
+        if (!user) {
+            throw new UnauthorizedException('Usuário ou senha inválidos');
+        }
+
+        const isPasswordValid = await this._hashService.compararSenha(data.password, user.password);
+        if (!isPasswordValid) {
             throw new UnauthorizedException('Usuário ou senha inválidos');
         }
 
