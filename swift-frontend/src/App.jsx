@@ -2,6 +2,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 
 import Login from "./pages/login/Login";
 import Inicio from "./pages/inicio/Inicio";
+import Produtos from './pages/produtos/Produtos.jsx';
+ 
 import './styles/global.css';
 import 'simple-notify/dist/simple-notify.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -9,6 +11,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { AuthProvider } from './services/auth/auth-context.service.tsx';
 import ProtectedRoute from './guard/ProtectedRoute.jsx';
 import PublicRoute from './guard/PublicRoute.jsx';
+
 
 function App() {
   return (
@@ -18,6 +21,8 @@ function App() {
           <Route path="/" element={<Navigate to="/inicio" />} />
           <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
           <Route path="/inicio" element={<ProtectedRoute><Inicio /></ProtectedRoute>} />
+          <Route path="/produtos" element={<ProtectedRoute><Produtos /></ProtectedRoute>} />
+          <Route path="/produtos" element={<ProtectedRoute><Produtos /></ProtectedRoute>} />
         </Routes>
       </AuthProvider>
     </Router>
