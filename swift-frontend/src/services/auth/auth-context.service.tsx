@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { GenericCrudService } from '../crud/generic-crud.ts';
+import { api } from '../api.ts';
 
 interface Login {
     username: string;
@@ -22,8 +22,6 @@ const defaultAuthContextValue: AuthContextType = {
   logout: () => Promise.resolve(),
 };
 
-const authService = new GenericCrudService();
-
 const AuthContext = createContext<AuthContextType>(defaultAuthContextValue);
 
 export const useAuth = () => {
@@ -37,7 +35,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const checkAuthStatus = async () => {
       try {
-        await authService.getAction<{ authenticated: boolean }>('/auth/status');
+        await api.get<{ authenticated: boolean }>('/auth/status');
         setIsAuthenticated(true);
       } catch (error) {
         setIsAuthenticated(false);
@@ -48,9 +46,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     checkAuthStatus();
   }, []);
 
-  const login = async (data: Login): Promise<boolean> => {
+  const login = async (data: Login) => {
     try {
-      await authService.create('/auth/login', data);
+      await api.post('/auth/login', data);
       setIsAuthenticated(true);
       return true;
     } catch (error) {
@@ -60,9 +58,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const logout = async (): Promise<void> => {
+  const logout = async () => {
     try {
-      await authService.postAction('/auth/logout');
+      await api.post('/auth/logout');
       setIsAuthenticated(false);
     } catch (error) {
       console.error('Erro ao fazer logout:', error);
