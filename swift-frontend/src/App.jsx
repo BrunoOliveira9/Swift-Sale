@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 
 import Login from "./pages/login/Login";
 import Inicio from "./pages/inicio/Inicio";
-import Produtos from './pages/produtos/Produtos.jsx';
+import Produtos from './pages/produtos/Produtos.tsx';
  
 import './styles/global.css';
 import 'simple-notify/dist/simple-notify.css';
