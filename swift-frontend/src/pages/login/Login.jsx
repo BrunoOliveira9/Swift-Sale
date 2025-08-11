@@ -14,12 +14,7 @@ function Login() {
     e.preventDefault(); 
     
     const loginSuccess = await login({ username, password });
-    
-    if (loginSuccess) {
-      showToast('success', 'Login realizado', 'Bem-vindo ao sistema!');
-    } else {
-      showToast('error', 'Erro de login', 'Usuário ou senha inválidos');
-    }
+
   }
 
   return (

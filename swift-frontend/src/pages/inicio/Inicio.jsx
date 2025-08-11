@@ -32,7 +32,6 @@ function Inicio() {
 
   const handleLogout = async () => {
     await logout();
-    showToast('info', 'Sessão encerrada', 'Você foi desconectado com sucesso.');
   };
 
   return (
