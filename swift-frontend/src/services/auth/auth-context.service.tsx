@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { GenericCrudService } from '../crud/generic-crud.ts';
+import showToast from '../../components/toast/Toast.jsx';
 
 interface Login {
     username: string;
@@ -52,10 +53,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       await authService.create('/auth/login', data);
       setIsAuthenticated(true);
+        showToast('success', 'Login realizado', 'Bem-vindo ao sistema!');
       return true;
     } catch (error) {
-      console.error('Erro de login:', error);
       setIsAuthenticated(false);
+      if(error.response){
+        showToast('error', 'Erro de login', 'Usuário ou senha inválidos');
+      }
       return false;
     }
   };
@@ -64,6 +68,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       await authService.postAction('/auth/logout');
       setIsAuthenticated(false);
+      showToast('info', 'Sessão encerrada', 'Você foi desconectado com sucesso.');
     } catch (error) {
       console.error('Erro ao fazer logout:', error);
     }
