@@ -1,29 +1,39 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Container, Row, Col, Button, Form, Table, Modal, InputGroup, FormControl, Badge } from 'react-bootstrap';
 import { FaPlus, FaSearch, FaEdit, FaTrash } from 'react-icons/fa';
 import './Produtos.css';
+import { ProdutosService } from '../../services/produtos/produtos-service.ts'
+import { Produto } from '../../models/produto.ts';
 
-// DADOS DE EXEMPLO
-const DADOS_PRODUTOS = [
-  { id: 1, codBarras: '789000111', nome: 'Refrigerante 2L', descricao: 'Refrigerante sabor guaraná', categoria: 'Bebidas', unidadeMedida: 'unidade', precoVenda: 8.50, precoCusto: 4.20, estqAtual: 50, estqMinimo: 10 },
-  { id: 2, codBarras: '789000222', nome: 'Arroz Tipo 1', descricao: 'Arroz branco agulhinha', categoria: 'Mercearia', unidadeMedida: 'kg', precoVenda: 25.00, precoCusto: 18.00, estqAtual: 8, estqMinimo: 15 },
-  { id: 3, codBarras: '789000333', nome: 'Cigarro', descricao: 'Cigarro que o Hygor gosta', categoria: 'saúde', unidadeMedida: 'unidade', precoVenda: 15.90, precoCusto: 10.50, estqAtual: 30, estqMinimo: 5 },
-];
+const _produtosService = new ProdutosService();
 
 const Produtos = () => {
-  const [produtos, setProdutos] = useState(DADOS_PRODUTOS);
+  const [produtos, setProdutos] = useState<Produto[]>([]);
   const [showModal, setShowModal] = useState(false);
-  const [produtoAtual, setProdutoAtual] = useState(null);
+  const [produtoAtual, setProdutoAtual] = useState<Produto | null>(null);
   const [termoBusca, setTermoBusca] = useState('');
+
+  useEffect(() => {
+    const fetchProdutos = async () => {
+      try {
+        const produtosDoServidor = await _produtosService.getAllProducts();
+        setProdutos(produtosDoServidor);
+      } catch (error) {
+        console.error("Erro ao buscar produtos:", error);
+      }
+    };
+    
+    fetchProdutos();
+  }, []);
 
   const handleCloseModal = () => {
     setShowModal(false);
     setProdutoAtual(null);
   };
 
-  const handleShowModal = (produto = null) => {
-    setProdutoAtual(produto);
-    setShowModal(true);
+  const handleShowModal = (produto: Produto | null = null) => {
+      setProdutoAtual(produto);
+      setShowModal(true);
   };
 
   const handleSave = (event) => {
@@ -48,7 +58,7 @@ const Produtos = () => {
   const produtosFiltrados = useMemo(() =>
     produtos.filter(p =>
       p.nome.toLowerCase().includes(termoBusca.toLowerCase()) ||
-      p.codBarras.includes(termoBusca)
+      p.codigo_barras.includes(termoBusca)
     ), [produtos, termoBusca]);
 
   return (
@@ -89,12 +99,12 @@ const Produtos = () => {
             <tr key={produto.id}>
               <td>{produto.nome}</td>
               <td>{produto.categoria}</td>
-              <td>R$ {Number(produto.precoVenda).toFixed(2)}</td>
+              <td>R$ {Number(produto.preco_venda).toFixed(2)}</td>
               <td className="text-center">
-                {produto.estqAtual <= produto.estqMinimo ? (
-                  <Badge bg="danger">Baixo ({produto.estqAtual})</Badge>
+                {produto.estoque_atual <= produto.estoque_minimo ? (
+                  <Badge bg="danger">Baixo ({produto.estoque_atual})</Badge>
                 ) : (
-                  <Badge bg="success">{produto.estqAtual}</Badge>
+                  <Badge bg="success">{produto.estoque_atual}</Badge>
                 )}
               </td>
               <td className="text-center">
@@ -126,7 +136,7 @@ const Produtos = () => {
               <Col md={6}>
                 <Form.Group className="mb-3">
                   <Form.Label>Código de Barras</Form.Label>
-                  <Form.Control name="codBarras" defaultValue={produtoAtual?.codBarras} />
+                  <Form.Control name="codBarras" defaultValue={produtoAtual?.codigo_barras} />
                 </Form.Group>
               </Col>
             </Row>
@@ -146,7 +156,7 @@ const Produtos = () => {
               <Col md={6}>
                 <Form.Group className="mb-3">
                   <Form.Label>Unidade de Medida</Form.Label>
-                  <Form.Select name="unidadeMedida" defaultValue={produtoAtual?.unidadeMedida}>
+                  <Form.Select name="unidadeMedida" defaultValue={produtoAtual?.unidade_medida}>
                     <option value="unidade">Unidade (UN)</option>
                     <option value="kg">Quilograma (Kg)</option>
                     <option value="litro">Litro (L)</option>
@@ -161,13 +171,13 @@ const Produtos = () => {
               <Col md={6}>
                 <Form.Group className="mb-3">
                   <Form.Label>Preço de Custo</Form.Label>
-                  <Form.Control type="number" step="0.01" name="precoCusto" defaultValue={produtoAtual?.precoCusto} />
+                  <Form.Control type="number" step="0.01" name="precoCusto" defaultValue={produtoAtual?.preco_custo} />
                 </Form.Group>
               </Col>
               <Col md={6}>
                 <Form.Group className="mb-3">
                   <Form.Label>Preço de Venda</Form.Label>
-                  <Form.Control type="number" step="0.01" name="precoVenda" defaultValue={produtoAtual?.precoVenda} required />
+                  <Form.Control type="number" step="0.01" name="precoVenda" defaultValue={produtoAtual?.preco_venda} required />
                 </Form.Group>
               </Col>
             </Row>
@@ -176,13 +186,13 @@ const Produtos = () => {
               <Col md={6}>
                 <Form.Group className="mb-3">
                   <Form.Label>Estoque Atual</Form.Label>
-                  <Form.Control type="number" name="estqAtual" defaultValue={produtoAtual?.estqAtual} required />
+                  <Form.Control type="number" name="estqAtual" defaultValue={produtoAtual?.estoque_atual} required />
                 </Form.Group>
               </Col>
               <Col md={6}>
                 <Form.Group className="mb-3">
                   <Form.Label>Estoque Mínimo</Form.Label>
-                  <Form.Control type="number" name="estqMinimo" defaultValue={produtoAtual?.estqMinimo} />
+                  <Form.Control type="number" name="estqMinimo" defaultValue={produtoAtual?.estoque_minimo} />
                 </Form.Group>
               </Col>
             </Row>
