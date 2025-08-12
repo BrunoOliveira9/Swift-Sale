@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { validationSchema } from './validation-variables';
 import { PrismaModule } from './prisma/prisma.module';
 import { ProdutosModule } from './produtos/produtos.module';
+import { UsuariosModulo } from './usuarios/usuarios.module';
 import { AuthenticationModule } from './auth/authtentication.modulo';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/guard/authentication.guard';
@@ -21,6 +22,7 @@ import { AuthGuard } from './auth/guard/authentication.guard';
     }),
     PrismaModule,
     ProdutosModule,
+    UsuariosModulo,
     AuthenticationModule,
   ],
   controllers: [AppController],

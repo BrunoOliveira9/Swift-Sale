@@ -38,10 +38,18 @@ model movimentacao_estoque {
 }
 
 model cad_usuario {
-  id          Int                 @id @default(autoincrement())
-  nome        String
-  username    String              @unique
-  password    String              
+  id           Int          @id @default(autoincrement())
+  nome         String
+  sobrenome    String?
+  username     String       @unique
+  password     String
+  email        String?      @unique
+  telefone     String?
+  cargo        String 
+  nivel_acesso nivel_acesso  // só aceita os valores do enum
+  ativo        Boolean      @default(true)
+  criado_em    DateTime     @default(now())
+  atualizado_em DateTime    @updatedAt
 }
 
 enum unidade_medida {
@@ -57,4 +65,10 @@ enum unidade_medida {
 enum tipo_movimentacao {
   ENTRADA
   SAIDA
+}
+
+enum nivel_acesso {
+  ADMIN
+  GERENTE
+  OPERADOR
 }

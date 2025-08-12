@@ -43,6 +43,10 @@ async function main() {
         nome: 'Adminstrador',
         username: 'admin',
         password: await hashPassword('admin123'),
+        email:'admin@admin.com',
+        cargo: 'Adminstrador',
+        nivel_acesso: 'ADMIN',
+        ativo: true
       },
     });
 
