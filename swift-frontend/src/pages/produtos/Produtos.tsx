@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Container, Row, Col, Button, Form, Table, Modal, InputGroup, FormControl, Badge } from 'react-bootstrap';
 import { FaPlus, FaSearch, FaEdit, FaTrash } from 'react-icons/fa';
 import './Produtos.css';

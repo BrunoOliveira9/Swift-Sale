@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import Login from "./pages/login/Login";
 import Inicio from "./pages/inicio/Inicio";
 import Produtos from './pages/produtos/Produtos.tsx';
+import Usuarios from "./pages/usuarios/Usuarios.tsx";
  
 import './styles/global.css';
 import 'simple-notify/dist/simple-notify.css';
@@ -22,7 +23,7 @@ function App() {
           <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
           <Route path="/inicio" element={<ProtectedRoute><Inicio /></ProtectedRoute>} />
           <Route path="/produtos" element={<ProtectedRoute><Produtos /></ProtectedRoute>} />
-          <Route path="/produtos" element={<ProtectedRoute><Produtos /></ProtectedRoute>} />
+          <Route path="/usuarios" element={<ProtectedRoute><Usuarios /></ProtectedRoute>} />
         </Routes>
       </AuthProvider>
     </Router>

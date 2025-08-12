@@ -43,11 +43,23 @@ export class UsuariosService {
   }
 
   async update(id: number, updateUsuarioDto: UpdateUsuariosDto) {
-    await this.findOne(id); // Garante que existe
+    await this.findOne(id); // Garante que o usuário existe
+
+    // Prepara os dados para update
+    const dataToUpdate = { ...updateUsuarioDto };
+
+    if (updateUsuarioDto.password) {
+      // Só faz o hash se a senha for informada (não vazia)
+      dataToUpdate.password = await this.hash.hashSenha(updateUsuarioDto.password);
+    } else {
+      // Se não informar a senha, remove para não sobrescrever no banco
+      delete dataToUpdate.password;
+    }
+
     try {
       return await this.prisma.cad_usuario.update({
         where: { id },
-        data: updateUsuarioDto,
+        data: dataToUpdate,
       });
     } catch (error) {
       if (error.code === 'P2002') {
