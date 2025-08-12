@@ -1,9 +1,10 @@
 import { useState, useMemo, useEffect } from 'react';
-import { Container, Row, Col, Button, Form, Table, Modal, InputGroup, FormControl } from 'react-bootstrap';
-import { FaPlus, FaSearch, FaEdit, FaEye, FaEyeSlash } from 'react-icons/fa';
+import { Container, Row, Col, Button, Table, InputGroup, FormControl } from 'react-bootstrap';
+import { FaPlus, FaSearch, FaEdit } from 'react-icons/fa';
 import './Usuarios.css';
 import { UsuarioService } from '../../services/usuarios/usuarios-service.ts'
 import { Usuario } from '../../models/usuario.ts';
+import ModalEdicaoUsuario from '../../components/modal/ModalEdicaoUsuario.tsx'
 
 const _usuarioService = new UsuarioService();
 
@@ -61,40 +62,22 @@ const Usuarios = () => {
     setTelefone(usuarioAtual?.telefone || '');
   }, [usuarioAtual]);
 
-  const handleSave = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const dadosUsuario = Object.fromEntries(formData.entries()) as unknown as Partial<Usuario>;
-
-    // A checkbox "ativo" vem como string "on" ou undefined, precisa tratar para boolean
-    dadosUsuario.ativo = formData.get('ativo') === 'on';
-
-    // Se a senha estiver vazia, removemos para não sobrescrever
-    if (!dadosUsuario.password || dadosUsuario.password === '') {
-      delete dadosUsuario.password;
-    }
-
+  const handleSave = async (dadosUsuario: Partial<Usuario>) => {
     try {
       if (usuarioAtual && usuarioAtual.id) {
-        // Atualizar usuário
         const usuarioAtualizado = await _usuarioService.updateUser(String(usuarioAtual.id), dadosUsuario);
-        // Atualiza a lista local substituindo o usuário editado
-        setUsuarios((prev) =>
-          prev.map(u => (u.id === usuarioAtual.id ? usuarioAtualizado : u))
-        );
+        setUsuarios((prev) => prev.map(u => (u.id === usuarioAtual.id ? usuarioAtualizado : u)));
       } else {
-        // Criar novo usuário
         const novoUsuario = await _usuarioService.createUser(dadosUsuario);
-        // Adiciona na lista local
         setUsuarios((prev) => [...prev, novoUsuario]);
       }
       handleCloseModal();
     } catch (error) {
       console.error('Erro ao salvar usuário:', error);
-      // Opcional: mostrar uma mensagem de erro para o usuário
     }
   };
 
+  
   const usuariosFiltrados = useMemo(() =>
     usuarios.filter(p =>
       p.nome.toLowerCase().includes(termoBusca.toLowerCase()) ||
@@ -151,107 +134,12 @@ const Usuarios = () => {
           ))}
         </tbody>
       </Table>
-      
-      <Modal show={showModal} onHide={handleCloseModal} size="lg">
-        <Modal.Header closeButton>
-          <Modal.Title>{usuarioAtual ? 'Editar Usuário' : 'Novo Usuário'}</Modal.Title>
-        </Modal.Header>
-        <Form onSubmit={handleSave}>
-          <Modal.Body>
-            <Row>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>Nome do Usuário</Form.Label>
-                  <Form.Control name="nome" defaultValue={usuarioAtual?.nome} required />
-                </Form.Group>
-              </Col>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>Sobrenome</Form.Label>
-                  <Form.Control name="sobrenome" defaultValue={usuarioAtual?.sobrenome} />
-                </Form.Group>
-              </Col>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Check type="checkbox" label="Ativo" name="ativo" defaultChecked={usuarioAtual?.ativo ?? false} />
-                </Form.Group>
-              </Col>
-            </Row>
-            
-            <Form.Group className="mb-3">
-              <Form.Label>Login</Form.Label>
-              <Form.Control name="username" defaultValue={usuarioAtual?.username} />
-            </Form.Group>
-
-            <Row>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>Senha</Form.Label>
-                  <InputGroup>
-                    <Form.Control
-                      name="password"
-                      type={mostrarSenha ? 'text' : 'password'}
-                      defaultValue="" // sempre vazio para não mostrar senha encriptada
-                      placeholder={usuarioAtual ? "Digite nova senha para alterar" : "Digite a senha"}
-                      autoComplete="new-password"
-                      required={!usuarioAtual}
-                    />
-                    <Button
-                      variant="outline-secondary"
-                      onClick={() => setMostrarSenha(!mostrarSenha)}
-                      tabIndex={-1}
-                    >
-                      {mostrarSenha ? <FaEyeSlash /> : <FaEye />}
-                    </Button>
-                  </InputGroup>
-                </Form.Group>
-              </Col>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>Email</Form.Label>
-                  <Form.Control type="email" name="email" defaultValue={usuarioAtual?.email} placeholder="exemplo@dominio.com"/>
-                </Form.Group>
-              </Col>
-            </Row>
-
-            <Row>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>Cargo</Form.Label>
-                  <Form.Control name="cargo" defaultValue={usuarioAtual?.cargo} />
-                </Form.Group>
-              </Col>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>Telefone</Form.Label>
-                  <Form.Control type="text" name="telefone" value={telefone} onChange={e => setTelefone(formatarTelefone(e.target.value))} placeholder="(99) 99999-9999" pattern="^\(\d{2}\) \d{4,5}-\d{4}$" title="Formato: (99) 99999-9999"/>
-                </Form.Group>
-              </Col>
-            </Row>
-
-            <Row>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>Nível de acesso</Form.Label>
-                  <Form.Select name="nivel_acesso" defaultValue={usuarioAtual?.nivel_acesso}>
-                    <option value="ADMIN">ADMINISTRADOR</option>
-                    <option value="GERENTE">GERENTE</option>
-                    <option value="OPERADOR">OPERADOR</option>
-                  </Form.Select>
-                </Form.Group>
-              </Col>
-            </Row>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={handleCloseModal}>
-              Cancelar
-            </Button>
-            <Button variant="primary" type="submit">
-              Salvar
-            </Button>
-          </Modal.Footer>
-        </Form>
-      </Modal>
+      <ModalEdicaoUsuario
+        show={showModal}
+        onHide={handleCloseModal}
+        usuario={usuarioAtual}
+        onSave={handleSave}
+      />
     </Container>
   );
 };

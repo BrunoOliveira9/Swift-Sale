@@ -40,11 +40,11 @@ async function main() {
 
     await prisma.cad_usuario.create({
       data: {
-        nome: 'Adminstrador',
+        nome: 'Administrador',
         username: 'admin',
         password: await hashPassword('admin123'),
         email:'admin@admin.com',
-        cargo: 'Adminstrador',
+        cargo: 'Administrador',
         nivel_acesso: 'ADMIN',
         ativo: true
       },
