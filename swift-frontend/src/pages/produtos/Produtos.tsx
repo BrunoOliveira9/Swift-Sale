@@ -4,6 +4,9 @@ import { FaPlus, FaSearch, FaEdit, FaTrash } from 'react-icons/fa';
 import './Produtos.css';
 import { ProdutosService } from '../../services/produtos/produtos-service.ts'
 import { Produto } from '../../models/produto.ts';
+import { UnidadeMedida } from '../../enums/UnidadeMedida.ts';
+import AsteriscoObrigatorio from '../../components/asterisco-obrigatorio/AsteriscoObrigatorio.tsx';
+import showToast from '../../components/toast/Toast.jsx';
 
 const _produtosService = new ProdutosService();
 
@@ -13,16 +16,16 @@ const Produtos = () => {
   const [produtoAtual, setProdutoAtual] = useState<Produto | null>(null);
   const [termoBusca, setTermoBusca] = useState('');
 
+  const fetchProdutos = async () => {
+    try {
+      const produtosDoServidor = await _produtosService.getAllProducts();
+      setProdutos(produtosDoServidor);
+    } catch (error) {
+      console.error("Erro ao buscar produtos:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchProdutos = async () => {
-      try {
-        const produtosDoServidor = await _produtosService.getAllProducts();
-        setProdutos(produtosDoServidor);
-      } catch (error) {
-        console.error("Erro ao buscar produtos:", error);
-      }
-    };
-    
     fetchProdutos();
   }, []);
 
@@ -36,24 +39,68 @@ const Produtos = () => {
       setShowModal(true);
   };
 
-  const handleSave = (event) => {
+  const handleSave = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
-    const dadosProduto = Object.fromEntries(formData.entries());
+    const dadosProdutoPuro = Object.fromEntries(formData.entries());
 
+    const toString = (value: FormDataEntryValue): string => {
+      if (typeof value === 'string') return value;
+      return '';
+    }
+
+    // converter e mapeando os campos
+    const dadosProduto: Produto = {
+      id: produtoAtual?.id,
+      nome: toString(dadosProdutoPuro.nome),
+      codigo_barras: toString(dadosProdutoPuro.codBarras),
+      descricao: toString(dadosProdutoPuro.descricao),
+      categoria: toString(dadosProdutoPuro.categoria),
+      unidade_medida: dadosProdutoPuro.unidadeMedida as UnidadeMedida,
+      preco_venda: Number(dadosProdutoPuro.precoVenda),
+      preco_custo: Number(dadosProdutoPuro.precoCusto),
+      estoque_atual: Number(dadosProdutoPuro.estqAtual),
+      estoque_minimo: Number(dadosProdutoPuro.estqMinimo),
+    };
+
+    // se estiver em modo de edição - atualiza
     if (produtoAtual && produtoAtual.id) {
-      console.log("Atualizando produto:", { ...dadosProduto, id: produtoAtual.id });
-    } else {
-      console.log("Criando novo produto:", dadosProduto);
+        const updateProduct = async () => {
+          try{
+            await _produtosService.updateProduct(Number(dadosProduto.id), dadosProduto)
+            showToast('success', `Produto: ${dadosProduto.nome}`, 'Foi atualizado com sucesso.')
+            await fetchProdutos()
+          } catch (err) {
+            showToast('error', `Produto: ${dadosProduto.nome}`, 'Não foi possível concluir a edição do produto. '+err)
+          }
+        }
+        updateProduct();
+    } else { // se não tiver nenhum produto e nem id de produto, significa que estamos criando
+        const createProduct = async () => {
+          try {
+            await _produtosService.createProduct(dadosProduto)
+            showToast('success', `Produto: ${dadosProduto.nome}`, 'Cadastrado com sucesso.');
+            await fetchProdutos()
+          } catch (err) {
+            showToast('error', `Produto: ${dadosProduto.nome}`, 'Não foi possível realizar o cadastro do produto. '+err);
+          }
+        }
+        createProduct();
     }
     handleCloseModal();
   };
 
-  const handleDelete = (produtoId) => {
-    if (window.confirm("Tem certeza que deseja excluir este produto?")) {
-      console.log("Excluindo produto ID:", produtoId);
+  const handleDelete = async (produtoId, produtoNome) => {
+    if (window.confirm(`Tem certeza que deseja excluir o produto "${produtoNome}"?`)) {
+      try {
+        await _produtosService.deleteProduct(produtoId);
+        showToast('success', `Produto: ${produtoNome}`, 'Removido com sucesso.');
+        await fetchProdutos()
+      } catch (err) {
+        showToast('error', `Produto: ${produtoNome}`, 'Não foi possível remover o produto. ' + err);
+      }
     }
-  }
+  };
 
   const produtosFiltrados = useMemo(() =>
     produtos.filter(p =>
@@ -111,7 +158,7 @@ const Produtos = () => {
                 <Button variant="outline-primary" size="sm" className="me-2" onClick={() => handleShowModal(produto)}>
                   <FaEdit />
                 </Button>
-                <Button variant="outline-danger" size="sm" onClick={() => handleDelete(produto.id)}>
+                <Button variant="outline-danger" size="sm" onClick={() => handleDelete(produto.id,produto.nome)}>
                   <FaTrash />
                 </Button>
               </td>
@@ -129,14 +176,14 @@ const Produtos = () => {
             <Row>
               <Col md={6}>
                 <Form.Group className="mb-3">
-                  <Form.Label>Nome do Produto</Form.Label>
-                  <Form.Control name="nome" defaultValue={produtoAtual?.nome} required />
+                  <Form.Label>Nome do Produto <AsteriscoObrigatorio/></Form.Label>
+                  <Form.Control name="nome" defaultValue={produtoAtual?.nome} required/>
                 </Form.Group>
               </Col>
               <Col md={6}>
                 <Form.Group className="mb-3">
-                  <Form.Label>Código de Barras</Form.Label>
-                  <Form.Control name="codBarras" defaultValue={produtoAtual?.codigo_barras} />
+                  <Form.Label>Código de Barras <AsteriscoObrigatorio/></Form.Label>
+                  <Form.Control name="codBarras" defaultValue={produtoAtual?.codigo_barras} required/>
                 </Form.Group>
               </Col>
             </Row>
@@ -149,19 +196,20 @@ const Produtos = () => {
             <Row>
               <Col md={6}>
                 <Form.Group className="mb-3">
-                  <Form.Label>Categoria</Form.Label>
-                  <Form.Control name="categoria" defaultValue={produtoAtual?.categoria} />
+                  <Form.Label>Categoria <AsteriscoObrigatorio/></Form.Label>
+                  <Form.Control name="categoria" defaultValue={produtoAtual?.categoria} required/>
                 </Form.Group>
               </Col>
               <Col md={6}>
                 <Form.Group className="mb-3">
-                  <Form.Label>Unidade de Medida</Form.Label>
+                  <Form.Label>Unidade de Medida <AsteriscoObrigatorio/></Form.Label>
                   <Form.Select name="unidadeMedida" defaultValue={produtoAtual?.unidade_medida}>
-                    <option value="unidade">Unidade (UN)</option>
-                    <option value="kg">Quilograma (Kg)</option>
-                    <option value="litro">Litro (L)</option>
-                    <option value="metro">Metro (m)</option>
-                    <option value="caixa">Caixa (CX)</option>
+                    <option value="UNIDADE">Unidade (UN)</option>
+                    <option value="KG">Quilograma (Kg)</option>
+                    <option value="LITRO">Litro (L)</option>
+                    <option value="METRO">Metro (m)</option>
+                    <option value="CAIXA">Caixa (CX)</option>
+                    <option value="PACOTE">Pacote (PCT)</option>
                   </Form.Select>
                 </Form.Group>
               </Col>
@@ -170,13 +218,13 @@ const Produtos = () => {
             <Row>
               <Col md={6}>
                 <Form.Group className="mb-3">
-                  <Form.Label>Preço de Custo</Form.Label>
-                  <Form.Control type="number" step="0.01" name="precoCusto" defaultValue={produtoAtual?.preco_custo} />
+                  <Form.Label>Preço de Custo <AsteriscoObrigatorio/></Form.Label>
+                  <Form.Control type="number" step="0.01" name="precoCusto" defaultValue={produtoAtual?.preco_custo} required />
                 </Form.Group>
               </Col>
               <Col md={6}>
                 <Form.Group className="mb-3">
-                  <Form.Label>Preço de Venda</Form.Label>
+                  <Form.Label>Preço de Venda <AsteriscoObrigatorio/></Form.Label>
                   <Form.Control type="number" step="0.01" name="precoVenda" defaultValue={produtoAtual?.preco_venda} required />
                 </Form.Group>
               </Col>
@@ -185,14 +233,14 @@ const Produtos = () => {
             <Row>
               <Col md={6}>
                 <Form.Group className="mb-3">
-                  <Form.Label>Estoque Atual</Form.Label>
+                  <Form.Label>Estoque Atual <AsteriscoObrigatorio/></Form.Label>
                   <Form.Control type="number" name="estqAtual" defaultValue={produtoAtual?.estoque_atual} required />
                 </Form.Group>
               </Col>
               <Col md={6}>
                 <Form.Group className="mb-3">
-                  <Form.Label>Estoque Mínimo</Form.Label>
-                  <Form.Control type="number" name="estqMinimo" defaultValue={produtoAtual?.estoque_minimo} />
+                  <Form.Label>Estoque Mínimo <AsteriscoObrigatorio/></Form.Label>
+                  <Form.Control type="number" name="estqMinimo" defaultValue={produtoAtual?.estoque_minimo} required/>
                 </Form.Group>
               </Col>
             </Row>

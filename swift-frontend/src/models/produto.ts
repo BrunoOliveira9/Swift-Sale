@@ -1,7 +1,7 @@
 import { UnidadeMedida } from "../enums/UnidadeMedida"
 
 export type Produto = {
-    id: number,
+    id?: number,
     codigo_barras: string,
     nome: string,
     descricao?: string,
