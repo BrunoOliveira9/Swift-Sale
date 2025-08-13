@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Modal, Button, Form, Row, Col, InputGroup } from 'react-bootstrap';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { Usuario } from '../../models/usuario.ts';
+import showToast from "../../components/toast/Toast.jsx";
 
 interface ModalEdicaoUsuarioProps {
   show: boolean;
@@ -12,6 +13,7 @@ interface ModalEdicaoUsuarioProps {
 
 const ModalEdicaoUsuario = ({ show, onHide, usuario, onSave }: ModalEdicaoUsuarioProps) => {
   const [mostrarSenha, setMostrarSenha] = useState(false);
+  const [mostrarConfirmarSenha, setMostrarConfirmarSenha] = useState(false);
   const [telefone, setTelefone] = useState(usuario?.telefone || '');
 
   useEffect(() => {
@@ -38,18 +40,29 @@ const ModalEdicaoUsuario = ({ show, onHide, usuario, onSave }: ModalEdicaoUsuari
     const dadosUsuario = Object.fromEntries(formData.entries()) as unknown as Partial<Usuario>;
 
     dadosUsuario.ativo = formData.get('ativo') === 'on';
+    
+    // Get password values as strings, not booleans
+    const password = formData.get('password') as string;
+    const confirmarSenha = formData.get('confirmarSenha') as string;
 
-    if (!dadosUsuario.password) {
-      delete dadosUsuario.password;
+    if (password !== confirmarSenha) {
+      showToast('error', 'As senhas não coincidem', 'Por favor, verifique as senhas');
+      return;
     }
 
+    if (password) {
+      dadosUsuario.password = password;
+    }
+
+    delete (dadosUsuario as any).confirmarSenha;
     dadosUsuario.telefone = telefone;
 
     try {
       await onSave(dadosUsuario);
+      showToast('success', 'Usuário salvo com sucesso', 'O usuário foi salvo com sucesso');
       onHide();
     } catch (error) {
-      console.error('Erro ao salvar usuário:', error);
+      showToast('error', 'Erro ao salvar usuário', 'Por favor, tente novamente');
     }
   };
 
@@ -110,12 +123,35 @@ const ModalEdicaoUsuario = ({ show, onHide, usuario, onSave }: ModalEdicaoUsuari
             </Col>
             <Col md={6}>
               <Form.Group className="mb-3">
+                <Form.Label>Confirmar Senha</Form.Label>
+                <InputGroup>
+                  <Form.Control
+                    name="confirmarSenha"
+                    type={mostrarConfirmarSenha ? 'text' : 'password'}
+                    defaultValue=""
+                    placeholder={usuario ? "Digite a senha para confirmar" : "Digite a senha"}
+                    autoComplete="new-password"
+                    required={!usuario}
+                  />
+                  <Button
+                    variant="outline-secondary"
+                    onClick={() => setMostrarConfirmarSenha(!mostrarConfirmarSenha)}
+                    tabIndex={-1}
+                  >
+                    {mostrarConfirmarSenha ? <FaEyeSlash /> : <FaEye />}
+                  </Button>
+                </InputGroup>
+              </Form.Group>
+            </Col>
+          </Row>
+          <Row>
+            <Col md={6}>
+              <Form.Group className="mb-3">
                 <Form.Label>Email</Form.Label>
                 <Form.Control type="email" name="email" defaultValue={usuario?.email} placeholder="exemplo@dominio.com" />
               </Form.Group>
             </Col>
           </Row>
-
           <Row>
             <Col md={6}>
               <Form.Group className="mb-3">
