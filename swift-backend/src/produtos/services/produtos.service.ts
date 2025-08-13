@@ -30,11 +30,14 @@ export class ProdutosService {
     return produto;
   }
 
-  async update(id: number, updateProdutoDto: UpdateProdutoDto) {
-    await this.findOne(id); // Verifica existência
+  async update(idProduct: number, data: UpdateProdutoDto) {
+    await this.findOne(idProduct);
+
+    const { id, ...dataSemId } = data;
+
     return this.prisma.cad_produto.update({
-      where: { id },
-      data: updateProdutoDto,
+      where: { id : idProduct },
+      data: dataSemId,
     });
   }
 

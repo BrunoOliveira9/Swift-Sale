@@ -40,7 +40,6 @@ export class AuthenticationService {
 
         const payload = { sub: user.id, username: user.username };
         const token = await this._jwtService.signAsync(payload);
-        console.log(token) // Usados para testar o postman
 
         res.cookie('token', token, {
             httpOnly: true,
