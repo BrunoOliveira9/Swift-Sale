@@ -4,6 +4,7 @@ import Login from "./pages/login/Login";
 import Inicio from "./pages/inicio/Inicio";
 import Produtos from './pages/produtos/Produtos.tsx';
 import Usuarios from "./pages/usuarios/Usuarios.tsx";
+import Vendas from "./pages/vendas/Vendas.tsx";
  
 import './styles/global.css';
 import 'simple-notify/dist/simple-notify.css';
@@ -24,6 +25,7 @@ function App() {
           <Route path="/inicio" element={<ProtectedRoute><Inicio /></ProtectedRoute>} />
           <Route path="/produtos" element={<ProtectedRoute><Produtos /></ProtectedRoute>} />
           <Route path="/usuarios" element={<ProtectedRoute><Usuarios /></ProtectedRoute>} />
+          <Route path="/vendas" element={<ProtectedRoute><Vendas /></ProtectedRoute>} />
         </Routes>
       </AuthProvider>
     </Router>
