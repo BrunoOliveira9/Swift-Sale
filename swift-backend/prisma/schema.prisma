@@ -8,48 +8,89 @@ datasource db {
 }
 
 model cad_produto {
-  id             Int                      @id @default(autoincrement())
-  codigo_barras  String                   @unique
+  id             Int            @id @default(autoincrement())
+  codigo_barras  String         @unique
   nome           String
   descricao      String?
   categoria      String
   unidade_medida unidade_medida
-  preco_venda    Decimal                  @db.Decimal(10, 2)
-  preco_custo    Decimal                  @db.Decimal(10, 2)
-  estoque_atual  Int                      @default(0)
-  estoque_minimo Int                      @default(0)
+  preco_venda    Decimal        @db.Decimal(10, 2)
+  preco_custo    Decimal        @db.Decimal(10, 2)
+  estoque_atual  Int            @default(0)
+  estoque_minimo Int            @default(0)
 
-  movimentacoes  movimentacao_estoque[]
+  movimentacoes movimentacao_estoque[]
+  itens_venda   item_venda[] // Relação inversa
 
-  created_at     DateTime                 @default(now())
-  updated_at     DateTime                 @updatedAt
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 }
 
 model movimentacao_estoque {
-  id           Int                @id @default(autoincrement())
-  produto      cad_produto        @relation(fields: [id_produto], references: [id])
-  id_produto   Int
-  tipo         tipo_movimentacao
-  quantidade   Int
-  data         DateTime           @default(now())
-  observacao   String?
+  id         Int               @id @default(autoincrement())
+  produto    cad_produto       @relation(fields: [id_produto], references: [id])
+  id_produto Int
+  tipo       tipo_movimentacao
+  quantidade Int
+  data       DateTime          @default(now())
+  observacao String?
 
-  created_at   DateTime           @default(now())
+  created_at DateTime @default(now())
 }
 
 model cad_usuario {
-  id           Int          @id @default(autoincrement())
-  nome         String
-  sobrenome    String?
-  username     String       @unique
-  password     String
-  email        String?      @unique
-  telefone     String?
-  cargo        String 
-  nivel_acesso nivel_acesso  // só aceita os valores do enum
-  ativo        Boolean      @default(true)
-  criado_em    DateTime     @default(now())
-  atualizado_em DateTime    @updatedAt
+  id            Int          @id @default(autoincrement())
+  nome          String
+  sobrenome     String?
+  username      String       @unique
+  password      String
+  email         String?      @unique
+  telefone      String?
+  cargo         String
+  nivel_acesso  nivel_acesso
+  ativo         Boolean      @default(true)
+  criado_em     DateTime     @default(now())
+  atualizado_em DateTime     @updatedAt
+
+  vendas Venda[] // trocar 'venda[]' para 'Venda[]'
+}
+
+model Cliente {
+  id        Int      @id @default(autoincrement())
+  nome      String
+  cpf       String   @unique
+  telefone  String?
+  vendas    Venda[]
+
+  @@map("cad_cliente")
+}
+
+model Venda {
+  id         Int          @id @default(autoincrement())
+  usuario    cad_usuario  @relation(fields: [id_usuario], references: [id])
+  id_usuario Int
+  cliente    Cliente?     @relation(fields: [id_cliente], references: [id])
+  id_cliente Int? // Pode ser null
+  total      Decimal      @db.Decimal(10, 2)
+  data_venda DateTime     @default(now())
+  itens      item_venda[]
+
+  created_at DateTime @default(now())
+
+  @@map("cad_venda")
+}
+
+model item_venda {
+  id         Int         @id @default(autoincrement())
+  venda      Venda       @relation(fields: [id_venda], references: [id])
+  id_venda   Int
+  produto    cad_produto @relation(fields: [id_produto], references: [id])
+  id_produto Int
+  quantidade Int
+  preco_unit Decimal     @db.Decimal(10, 2)
+  subtotal   Decimal     @db.Decimal(10, 2)
+
+  created_at DateTime @default(now())
 }
 
 enum unidade_medida {
