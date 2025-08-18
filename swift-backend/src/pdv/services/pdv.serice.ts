@@ -176,14 +176,34 @@ export class PdvService {
   async listarVendasPorUsuario(usuarioId: number) {
     return await this.prisma.venda.findMany({
       where: { id_usuario: usuarioId },
-      include: {
-        usuario: true,
-        cliente: true,
-        itens: {
-          include: { produto: true },
+      select: {
+        id: true,
+        total: true,
+        created_at: true,
+        usuario: {
+          select: {
+            nome: true,
+          },
         },
       },
       orderBy: { id: 'desc' },
     });
+  }
+
+  async listarVendasPorCliente(clienteId: number) {
+    return await this.prisma.venda.findMany({
+      where: { id_cliente: clienteId },
+      select: {
+        id: true,
+        total: true,
+        created_at: true,
+        cliente: {
+          select: {
+            nome: true,
+          },
+        },
+      },
+      orderBy: { id: 'desc' }, 
+    })
   }
 }

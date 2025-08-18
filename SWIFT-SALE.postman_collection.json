@@ -178,7 +178,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInVzZXJuYW1lIjoiYWRtaW4iLCJpYXQiOjE3NTQ5NTc2NzMsImV4cCI6MTc1NDk2MTI3M30.I8LdIBnRuQTn9Ry-HfHlb0-op9NhzQQ2PBpVFrZKGp0",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInVzZXJuYW1lIjoiYWRtaW4iLCJpYXQiOjE3NTQ5NjUzNDYsImV4cCI6MTc1NDk2ODk0Nn0.XFc4cBrwBl6zW57dwY1bYebZ62Tafq-bay7WslhyfIk",
 									"type": "string"
 								}
 							]
@@ -249,12 +249,12 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInVzZXJuYW1lIjoiYWRtaW4iLCJpYXQiOjE3NTQ5NTc2NzMsImV4cCI6MTc1NDk2MTI3M30.I8LdIBnRuQTn9Ry-HfHlb0-op9NhzQQ2PBpVFrZKGp0",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInVzZXJuYW1lIjoiYWRtaW4iLCJpYXQiOjE3NTQ5NjUzNDYsImV4cCI6MTc1NDk2ODk0Nn0.XFc4cBrwBl6zW57dwY1bYebZ62Tafq-bay7WslhyfIk",
 									"type": "string"
 								}
 							]
 						},
-						"method": "PATCH",
+						"method": "PUT",
 						"header": [
 							{
 								"key": "Authorization",
@@ -264,7 +264,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"nome\": \"Adminstrador teste\",\n    \"sobrenome\": null,\n    \"username\": \"admin\",\n    \"password\": \"$2b$12$1yFuoVdDV.4.t/fGpen3KOzFHbKgwE6ZHMveADloGotexHX/6o9/e\",\n    \"email\": \"admin@admin.com\",\n    \"telefone\": null,\n    \"cargo\": \"Adminstrador\",\n    \"nivel_acesso\": \"ADMIN\",\n    \"ativo\": true,\n    \"criado_em\": \"2025-08-12T00:11:49.145Z\",\n    \"atualizado_em\": \"2025-08-12T00:11:49.145Z\"\n}",
+							"raw": "{\n    \"nome\": \"Adminstrador hygor\",\n    \"sobrenome\": null,\n    \"username\": \"adm2in\",\n    \"password\": \"$2b$12$1yFuoVdDV.4.t/fGpen3KOzFHbKgwE6ZHMveADloGotexHX/6o9/e\",\n    \"email\": \"admin@a2dmin.com\",\n    \"telefone\": null,\n    \"cargo\": \"Adminstrador\",\n    \"nivel_acesso\": \"ADMIN\",\n    \"ativo\": true,\n    \"criado_em\": \"2025-08-12T00:11:49.145Z\",\n    \"atualizado_em\": \"2025-08-12T00:11:49.145Z\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -272,7 +272,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/usuarios/1",
+							"raw": "http://localhost:3000/usuarios/3",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -280,7 +280,7 @@
 							"port": "3000",
 							"path": [
 								"usuarios",
-								"1"
+								"3"
 							]
 						}
 					},
@@ -368,106 +368,105 @@
 			]
 		},
 		{
-			"name": "http://localhost:3000/auth/login",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Accept",
-						"value": "application/json, text/plain, */*"
-					},
-					{
-						"key": "Accept-Language",
-						"value": "pt-BR,pt;q=0.5"
-					},
-					{
-						"key": "Cache-Control",
-						"value": "no-cache"
-					},
-					{
-						"key": "Connection",
-						"value": "keep-alive"
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					},
-					{
-						"key": "Origin",
-						"value": "http://localhost:3000"
-					},
-					{
-						"key": "Pragma",
-						"value": "no-cache"
-					},
-					{
-						"key": "Referer",
-						"value": "http://localhost:3000/login"
-					},
-					{
-						"key": "Sec-Fetch-Dest",
-						"value": "empty"
-					},
-					{
-						"key": "Sec-Fetch-Mode",
-						"value": "cors"
-					},
-					{
-						"key": "Sec-Fetch-Site",
-						"value": "same-origin"
-					},
-					{
-						"key": "Sec-GPC",
-						"value": "1"
-					},
-					{
-						"key": "User-Agent",
-						"value": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
-					},
-					{
-						"key": "sec-ch-ua",
-						"value": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Brave\";v=\"138\""
-					},
-					{
-						"key": "sec-ch-ua-mobile",
-						"value": "?0"
-					},
-					{
-						"key": "sec-ch-ua-platform",
-						"value": "\"Linux\""
-					},
-					{
-						"key": "Cookie",
-						"value": "portainer.pagination_containers=0; portainer.pagination_services=0; portainer.pagination_stack-services=0"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\"username\":\"admin\",\"password\":\"admin123\"}",
-					"options": {
-						"raw": {
-							"language": "json"
+			"name": "PDV",
+			"item": [
+				{
+					"name": "venda",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInVzZXJuYW1lIjoiYWRtaW4iLCJpYXQiOjE3NTUzMDIwNDMsImV4cCI6MTc1NTMwNTY0M30.xyiaQhVLQisNhQqeWIqAqZ2yHPrub2LbxkVgnj__DJ0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"usuarioId\": 1,\r\n  \"itens\": [\r\n    {\r\n      \"produtoId\": 1,\r\n      \"quantidade\": 3\r\n    },\r\n    {\r\n      \"produtoId\": 2,\r\n      \"quantidade\": 4\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/pdv/venda",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"pdv",
+								"venda"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "http://localhost:3000/auth/login",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "3000",
-					"path": [
-						"auth",
-						"login"
-					]
-				},
-				"description": "Generated from cURL: curl 'http://localhost:3000/auth/login' \\\n  -H 'Accept: application/json, text/plain, */*' \\\n  -H 'Accept-Language: pt-BR,pt;q=0.5' \\\n  -H 'Cache-Control: no-cache' \\\n  -H 'Connection: keep-alive' \\\n  -H 'Content-Type: application/json' \\\n  -b 'portainer.pagination_containers=0; portainer.pagination_services=0; portainer.pagination_stack-services=0' \\\n  -H 'Origin: http://localhost:3000' \\\n  -H 'Pragma: no-cache' \\\n  -H 'Referer: http://localhost:3000/login' \\\n  -H 'Sec-Fetch-Dest: empty' \\\n  -H 'Sec-Fetch-Mode: cors' \\\n  -H 'Sec-Fetch-Site: same-origin' \\\n  -H 'Sec-GPC: 1' \\\n  -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36' \\\n  -H 'sec-ch-ua: \"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Brave\";v=\"138\"' \\\n  -H 'sec-ch-ua-mobile: ?0' \\\n  -H 'sec-ch-ua-platform: \"Linux\"' \\\n  --data-raw '{\"username\":\"admin\",\"password\":\"admin123\"}'"
-			},
-			"response": []
+				{
+					"name": "listar vendas",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInVzZXJuYW1lIjoiYWRtaW4iLCJpYXQiOjE3NTU0ODY3NTAsImV4cCI6MTc1NTQ5MDM1MH0.BRD2JFkuFYR1ox1oPA_IdK6LlTkldwC8T67vfG04ZJs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"usuarioId\": 1,\r\n  \"itens\": [\r\n    {\r\n      \"produtoId\": 10,\r\n      \"quantidade\": 2\r\n    },\r\n    {\r\n      \"produtoId\": 15,\r\n      \"quantidade\": 1\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/pdv/vendas",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"pdv",
+								"vendas"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		},
 		{
-			"name": "http://localhost:3000/auth/login Copy",
+			"name": "LOGGIN",
 			"request": {
 				"method": "POST",
 				"header": [

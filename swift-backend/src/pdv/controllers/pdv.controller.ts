@@ -12,8 +12,8 @@ export class PdvController {
   }
 
   @Delete('venda/:id')
-  async deletarVenda(@Param('id') id: number) {
-    return await this.pdvService.deletarVenda(id);
+  async deletarVenda(@Param('id') id: string) {
+    return await this.pdvService.deletarVenda(Number(id));
   }
 
   @Get('vendas')
@@ -22,7 +22,7 @@ export class PdvController {
   }
 
   @Get('vendas/usuario/:id')
-  async listarVendasPorUsuario(@Param('id') id: number) {
-    return await this.pdvService.listarVendasPorUsuario(id);
+  async listarVendasPorUsuario(@Param('id') id: string) {
+    return await this.pdvService.listarVendasPorUsuario(Number(id));
   }
 }
