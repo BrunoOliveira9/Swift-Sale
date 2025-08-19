@@ -13,7 +13,7 @@ export class AuthenticationController {
    @Post('login')
    @Public()   
    async login(@Body() data: LoginDto, @Res({ passthrough: true }) res: Response) {
-    return this._authenticationService.login(data, res);
+     return this._authenticationService.login(data, res);
    }
 
    @Post('logout')
