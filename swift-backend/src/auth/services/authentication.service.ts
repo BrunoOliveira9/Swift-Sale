@@ -4,13 +4,15 @@ import { LoginDto } from "../dto/login.dto";
 import { PrismaService } from "../../prisma/prisma.service";
 import { HashService } from "src/core/crypto/hash.service";
 import { Response } from "express";
+import { CryptoService } from "src/core/crypto/crypto.service";
 
 @Injectable()
 export class AuthenticationService {
     constructor(
         private readonly _jwtService: JwtService,
         private readonly _hashService: HashService,
-        private prisma: PrismaService
+        private prisma: PrismaService,
+        private readonly _cryptoService: CryptoService
     ) { }
     
     async valideToken(token: string): Promise<boolean> {
@@ -23,9 +25,12 @@ export class AuthenticationService {
     }
     
     async login(data: LoginDto, res: Response) {
+
+        const encryptedUsername = this._cryptoService.encrypt(data.username);
+
         const user = await this.prisma.cad_usuario.findUnique({
             where: {
-                username: data.username,
+                username: encryptedUsername,
             },
         });
 
@@ -38,7 +43,10 @@ export class AuthenticationService {
             throw new UnauthorizedException('Usuário ou senha inválidos');
         }
 
-        const payload = { sub: user.id, username: user.username };
+        // descriptografa o username antes de incluir no payload do jwt
+        const decryptedUsername = this._cryptoService.decrypt(user.username);
+
+        const payload = { sub: user.id, username: decryptedUsername };
         const token = await this._jwtService.signAsync(payload);
         console.log(token);
 

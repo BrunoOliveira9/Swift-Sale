@@ -6,6 +6,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CryptoModule } from 'src/core/crypto/crypto.module';
 import { HashService } from 'src/core/crypto/hash.service';
+import { CryptoService } from 'src/core/crypto/crypto.service';
 
 @Module({
   imports: [
@@ -24,7 +25,7 @@ import { HashService } from 'src/core/crypto/hash.service';
     }),
   ],
   controllers: [AuthenticationController],
-  providers: [AuthenticationService, PrismaService, HashService],
+  providers: [AuthenticationService, PrismaService, HashService, CryptoService],
   exports: [AuthenticationService],
 })
 export class AuthenticationModule {}
