@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { Logger } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import * as dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 
@@ -13,6 +13,8 @@ async function bootstrap() {
   // if (!process.env.FRONTEND_HOST || !process.env.FRONTEND_PORT) throw new Error('Por favor defina as seguintes variáveis no .env do backend - FRONTEND_HOST, FRONTEND_PORT');
   
   const app = await NestFactory.create(AppModule);
+
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
   app.enableCors({
     origin: frontendUrl,

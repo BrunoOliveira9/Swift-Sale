@@ -19,7 +19,7 @@ export class CreateProdutoDto {
   @IsEnum(unidade_medida)
   unidade_medida: unidade_medida;
 
-  @IsNumber()
+  @IsNumber({}, {message: 'Preço de venda precisa ser um número'})
   @Min(0)
   preco_venda: number;
 
