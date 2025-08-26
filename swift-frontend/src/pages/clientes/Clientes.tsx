@@ -13,7 +13,6 @@ const Clientes = () => {
   const [showModal, setShowModal] = useState(false);
   const [clienteAtual, setClienteAtual] = useState<Cliente | null>(null);
   const [termoBusca, setTermoBusca] = useState('');
-  const [telefone, setTelefone] = useState(clienteAtual?.telefone || '');
 
   useEffect(() => {
     const fetchClientes = async () => {
@@ -38,28 +37,6 @@ const Clientes = () => {
     setShowModal(false);
     setClienteAtual(null);
   };
-
-  const formatarTelefone = (valor: string) => {
-    // Remove tudo que não for dígito
-    valor = valor.replace(/\D/g, '');
-
-    // Formata: (99) 99999-9999 ou (99) 9999-9999
-    if (valor.length > 10) {
-      valor = valor.replace(/^(\d{2})(\d{5})(\d{4}).*/, '($1) $2-$3');
-    } else if (valor.length > 5) {
-      valor = valor.replace(/^(\d{2})(\d{4})(\d{0,4}).*/, '($1) $2-$3');
-    } else if (valor.length > 2) {
-      valor = valor.replace(/^(\d{2})(\d{0,5})/, '($1) $2');
-    } else if (valor.length > 0) {
-      valor = valor.replace(/^(\d*)/, '($1');
-    }
-
-    return valor;
-  };
-
-  useEffect(() => {
-    setTelefone(clienteAtual?.telefone || '');
-  }, [clienteAtual]);
 
   const handleSave = async (dadosCliente: Partial<Cliente>) => {
     try {
@@ -138,6 +115,7 @@ const Clientes = () => {
         onHide={handleCloseModal}
         cliente={clienteAtual}
         onSave={handleSave}
+        clientesExistentes={clientes}
       />
     </Container>
   );

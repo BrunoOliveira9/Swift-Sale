@@ -9,19 +9,20 @@ interface ModalEdicaoClienteProps {
   onHide: () => void;
   cliente?: Cliente | null;
   onSave: (dadosCliente: Partial<Cliente>) => Promise<void>;
+  clientesExistentes: Cliente[];
 }
 
-const ModalEdicaoCliente = ({ show, onHide, cliente, onSave }: ModalEdicaoClienteProps) => {
-  const [telefone, setTelefone] = useState(cliente?.telefone || '');
-  const [cpf, setCpf] = useState(cliente?.cpf || '');
-  const [nome, setNome] = useState(cliente?.nome || '');         
-  const [showJogo, setShowJogo] = useState(false);               
+const ModalEdicaoCliente = ({ show, onHide, cliente, onSave, clientesExistentes }: ModalEdicaoClienteProps) => {
+  const [telefone, setTelefone] = useState('');
+  const [cpf, setCpf] = useState('');
+  const [showJogo, setShowJogo] = useState(false);
 
   useEffect(() => {
-    setTelefone(cliente?.telefone || '');
-    setCpf(cliente?.cpf || '');
-    setNome(cliente?.nome || '');
-  }, [cliente]);
+    if (show) {
+      setTelefone(cliente?.telefone || '');
+      setCpf(cliente?.cpf || '');
+    }
+  }, [show, cliente]);
 
   const validarCPF = (valor: string): boolean => {
     let cpf = valor.replace(/\D/g, '');
@@ -45,46 +46,48 @@ const ModalEdicaoCliente = ({ show, onHide, cliente, onSave }: ModalEdicaoClient
 
   const formatarCPF = (valor: string) => {
     valor = valor.replace(/\D/g, '');
-    if (valor.length > 9) {
-      valor = valor.replace(/^(\d{3})(\d{3})(\d{3})(\d{0,2}).*/, '$1.$2.$3-$4');
-    } else if (valor.length > 6) {
-      valor = valor.replace(/^(\d{3})(\d{3})(\d{0,3}).*/, '$1.$2.$3');
-    } else if (valor.length > 3) {
-      valor = valor.replace(/^(\d{3})(\d{0,3}).*/, '$1.$2');
-    }
+    if (valor.length > 9) valor = valor.replace(/^(\d{3})(\d{3})(\d{3})(\d{0,2}).*/, '$1.$2.$3-$4');
+    else if (valor.length > 6) valor = valor.replace(/^(\d{3})(\d{3})(\d{0,3}).*/, '$1.$2.$3');
+    else if (valor.length > 3) valor = valor.replace(/^(\d{3})(\d{0,3}).*/, '$1.$2');
     return valor;
   };
 
   const formatarTelefone = (valor: string) => {
     valor = valor.replace(/\D/g, '');
-    if (valor.length > 10) {
-      valor = valor.replace(/^(\d{2})(\d{5})(\d{4}).*/, '($1) $2-$3');
-    } else if (valor.length > 5) {
-      valor = valor.replace(/^(\d{2})(\d{4})(\d{0,4}).*/, '($1) $2-$3');
-    } else if (valor.length > 2) {
-      valor = valor.replace(/^(\d{2})(\d{0,5})/, '($1) $2');
-    } else if (valor.length > 0) {
-      valor = valor.replace(/^(\d*)/, '($1');
-    }
+    if (valor.length > 10) valor = valor.replace(/^(\d{2})(\d{5})(\d{4}).*/, '($1) $2-$3');
+    else if (valor.length > 5) valor = valor.replace(/^(\d{2})(\d{4})(\d{0,4}).*/, '($1) $2-$3');
+    else if (valor.length > 2) valor = valor.replace(/^(\d{2})(\d{0,5})/, '($1) $2');
+    else if (valor.length > 0) valor = valor.replace(/^(\d*)/, '($1');
     return valor;
   };
 
   const handleSave = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (nome.trim().toLowerCase() === 'jogo') {
+    const formData = new FormData(event.currentTarget);
+    const dadosCliente = Object.fromEntries(formData.entries()) as unknown as Partial<Cliente>;
+    const clientes = clientesExistentes || [];
+    dadosCliente.telefone = telefone;
+    dadosCliente.cpf = cpf;
+    dadosCliente.nome = dadosCliente.nome?.trim() || '';
+
+    // Easter egg do jogo
+    if (dadosCliente.nome.toLowerCase() === 'jogo') {
       setShowJogo(true);
       return;
     }
 
-    const formData = new FormData(event.currentTarget);
-    const dadosCliente = Object.fromEntries(formData.entries()) as unknown as Partial<Cliente>;
-    dadosCliente.telefone = telefone;
-    dadosCliente.cpf = cpf;
-    dadosCliente.nome = nome;
-
     if (!validarCPF(cpf)) {
       showToast('error', 'CPF inválido', 'Por favor, insira um CPF válido');
+      return;
+    }
+
+    if (clientes.some(c => c.cpf === cpf && c.id !== cliente?.id)) {
+      showToast('error', 'CPF duplicado', 'Já existe um cliente com este CPF.');
+      return;
+    }
+    if (clientes.some(c => c.telefone === telefone && c.id !== cliente?.id)) {
+      showToast('error', 'Telefone duplicado', 'Já existe um cliente com este telefone.');
       return;
     }
 
@@ -92,12 +95,12 @@ const ModalEdicaoCliente = ({ show, onHide, cliente, onSave }: ModalEdicaoClient
       await onSave(dadosCliente);
       showToast('success', 'Cliente salvo com sucesso', 'O cliente foi salvo com sucesso');
       onHide();
-    } catch (error) {
+    } catch {
       showToast('error', 'Erro ao salvar cliente', 'Por favor, tente novamente');
     }
   };
 
-  const cpfObrigatorio = nome.trim().toLowerCase() !== 'jogo';
+  const cpfObrigatorio = true;
 
   return (
     <>
@@ -111,12 +114,7 @@ const ModalEdicaoCliente = ({ show, onHide, cliente, onSave }: ModalEdicaoClient
               <Col md={6}>
                 <Form.Group className="mb-3">
                   <Form.Label>Nome</Form.Label>
-                  <Form.Control
-                    name="nome"
-                    value={nome}
-                    onChange={e => setNome(e.target.value)}
-                    required
-                  />
+                  <Form.Control name="nome" defaultValue={cliente?.nome} required />
                 </Form.Group>
               </Col>
               <Col md={6}>
@@ -157,7 +155,6 @@ const ModalEdicaoCliente = ({ show, onHide, cliente, onSave }: ModalEdicaoClient
               </Col>
             </Row>
           </Modal.Body>
-
           <Modal.Footer>
             <Button variant="secondary" onClick={onHide}>Cancelar</Button>
             <Button variant="primary" type="submit">Salvar</Button>
