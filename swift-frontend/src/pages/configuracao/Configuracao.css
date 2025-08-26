@@ -1,0 +1,94 @@
+.navigation-left {
+  height: 100vh;
+  background: linear-gradient(180deg, #0f172a, #1e293b);
+  color: rgb(221, 192, 192);
+  padding: 20px 0px; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+  border-right: 1px solid #191d27;
+}
+
+.configuration {
+    background: linear-gradient(180deg, #0f172a, rgb(59, 74, 94));
+    padding: 30px;
+}
+
+.logo-centered {
+    max-width: 120px;
+    margin: 20px 0;
+}
+
+.buttons-navigation {
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.btn-config {
+    width: 100%;
+    background: #1e293b;
+    border: none;
+    color: #f1f5f9;
+    padding: 12px 16px;
+    border-radius: 0;
+    text-align: left;
+    font-size: 15px;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+    border-bottom: 1px solid #334155; 
+}
+
+.btn-config:hover {
+    background: #334155;
+    border-color: #38bdf8;
+    color: #38bdf8;
+    transform: none; 
+    box-shadow: none;
+}
+
+.btn-config:first-child {
+  border-top: none;
+}
+
+.btn-config:last-child {
+  border-bottom: none;
+}
+
+/* config scrollbar sidemenu */
+/* Para navegadores baseados em WebKit (Chrome, Safari, Edge, Opera) */
+.navigation-left::-webkit-scrollbar {
+  width: 8px; /* Largura da scrollbar */
+}
+
+/* Track da scrollbar (a parte "vazia") */
+.navigation-left::-webkit-scrollbar-track {
+  background: #0f172a; /* Cor de fundo da track */
+}
+
+/* Handle da scrollbar (a parte que você arrasta) */
+.navigation-left::-webkit-scrollbar-thumb {
+  background-color: #334155; /* Cor do handle */
+  border-radius: 4px; /* Arredonda as bordas do handle */
+  border: 2px solid #0f172a; /* Borda para dar um pequeno respiro */
+}
+
+/* Altera a cor do handle no hover para um visual mais interativo */
+.navigation-left::-webkit-scrollbar-thumb:hover {
+  background-color: #38bdf8;
+}
+
+/* Para o Firefox */
+.navigation-left {
+  /*
+    * O Firefox usa uma propriedade diferente para estilizar a scrollbar.
+    * Você pode usar `scrollbar-width` para controlar a espessura e
+    * `scrollbar-color` para as cores.
+    */
+  scrollbar-width: thin; /* Pode ser 'auto', 'thin' ou 'none' */
+  scrollbar-color: #334155 #0f172a; /* thumb e track */
+}

@@ -17,7 +17,7 @@ const menuItems = [
   { title: 'Produtos', icon: <FaBoxOpen />, color: '#6d4c41', path: '/produtos' },
   { title: 'Clientes', icon: <FaUserFriends />, color: '#78909c', path: '/clientes' },
   { title: 'Financeiro', icon: <FaCreditCard />, color: '#26a69a', path: '/financeiro' },
-  { title: 'Serviços', icon: <FaTools />, color: '#ab47bc', path: '/servicos' },
+  { title: 'Configuração', icon: <FaTools />, color: '#ab47bc', path: '/configuracao' },
   { title: 'Logística', icon: <FaShippingFast />, color: '#00bcd4', path: '/logistica' },
   { title: 'Relatórios', icon: <FaFileAlt />, color: '#ffa726', path: '/relatorios' },
 ];
