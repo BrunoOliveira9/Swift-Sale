@@ -58,6 +58,7 @@ model cad_usuario {
 model Cliente {
   id        Int      @id @default(autoincrement())
   nome      String
+  sobrenome String
   cpf       String   @unique
   telefone  String?
   vendas    Venda[]

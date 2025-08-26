@@ -48,7 +48,6 @@ export class AuthenticationService {
 
         const payload = { sub: user.id, username: decryptedUsername };
         const token = await this._jwtService.signAsync(payload);
-        console.log(token);
 
         res.cookie('token', token, {
             httpOnly: true,
