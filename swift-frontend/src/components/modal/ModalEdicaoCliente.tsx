@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Modal, Button, Form, Row, Col, InputGroup } from 'react-bootstrap';
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import { Cliente } from '../../models/cliente.ts';
 import showToast from "../../components/toast/Toast.jsx";
+import JogoDaVelha from '../jogoDaVelha.tsx';
 
 interface ModalEdicaoClienteProps {
   show: boolean;
@@ -12,12 +12,15 @@ interface ModalEdicaoClienteProps {
 }
 
 const ModalEdicaoCliente = ({ show, onHide, cliente, onSave }: ModalEdicaoClienteProps) => {
-  const [telefone, setTelefone] = useState(cliente?.telefone || '')
+  const [telefone, setTelefone] = useState(cliente?.telefone || '');
   const [cpf, setCpf] = useState(cliente?.cpf || '');
+  const [nome, setNome] = useState(cliente?.nome || '');         
+  const [showJogo, setShowJogo] = useState(false);               
 
   useEffect(() => {
     setTelefone(cliente?.telefone || '');
     setCpf(cliente?.cpf || '');
+    setNome(cliente?.nome || '');
   }, [cliente]);
 
   const validarCPF = (valor: string): boolean => {
@@ -26,17 +29,13 @@ const ModalEdicaoCliente = ({ show, onHide, cliente, onSave }: ModalEdicaoClient
     if (/^(\d)\1{10}$/.test(cpf)) return false;
 
     let soma = 0;
-    for (let i = 0; i < 9; i++) {
-      soma += parseInt(cpf.charAt(i)) * (10 - i);
-    }
+    for (let i = 0; i < 9; i++) soma += parseInt(cpf.charAt(i)) * (10 - i);
     let resto = (soma * 10) % 11;
     if (resto === 10 || resto === 11) resto = 0;
     if (resto !== parseInt(cpf.charAt(9))) return false;
 
     soma = 0;
-    for (let i = 0; i < 10; i++) {
-      soma += parseInt(cpf.charAt(i)) * (11 - i);
-    }
+    for (let i = 0; i < 10; i++) soma += parseInt(cpf.charAt(i)) * (11 - i);
     resto = (soma * 10) % 11;
     if (resto === 10 || resto === 11) resto = 0;
     if (resto !== parseInt(cpf.charAt(10))) return false;
@@ -72,11 +71,17 @@ const ModalEdicaoCliente = ({ show, onHide, cliente, onSave }: ModalEdicaoClient
 
   const handleSave = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    if (nome.trim().toLowerCase() === 'jogo') {
+      setShowJogo(true);
+      return;
+    }
+
     const formData = new FormData(event.currentTarget);
     const dadosCliente = Object.fromEntries(formData.entries()) as unknown as Partial<Cliente>;
-
     dadosCliente.telefone = telefone;
     dadosCliente.cpf = cpf;
+    dadosCliente.nome = nome;
 
     if (!validarCPF(cpf)) {
       showToast('error', 'CPF inválido', 'Por favor, insira um CPF válido');
@@ -92,65 +97,75 @@ const ModalEdicaoCliente = ({ show, onHide, cliente, onSave }: ModalEdicaoClient
     }
   };
 
-  return (
-    <Modal show={show} onHide={onHide} size="lg">
-      <Modal.Header closeButton>
-        <Modal.Title>{cliente ? 'Editar Cliente' : 'Novo Cliente'}</Modal.Title>
-      </Modal.Header>
-      <Form onSubmit={handleSave}>
-        <Modal.Body>
-          <Row>
-            <Col md={6}>
-              <Form.Group className="mb-3">
-                <Form.Label>Nome</Form.Label>
-                <Form.Control name="nome" defaultValue={cliente?.nome} required />
-              </Form.Group>
-            </Col>
-            <Col md={6}>
-              <Form.Group className="mb-3">
-                <Form.Label>Sobrenome</Form.Label>
-                <Form.Control name="sobrenome" defaultValue={cliente?.sobrenome} />
-              </Form.Group>
-            </Col>
-          </Row>
-          <Row>
-            <Col md={6}>
-              <Form.Group className="mb-3">
-                <Form.Label>CPF</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="cpf"
-                  value={cpf}
-                  onChange={e => setCpf(formatarCPF(e.target.value))}
-                  placeholder="000.000.000-00"
-                  maxLength={14}
-                  required
-                />
-              </Form.Group>
-            </Col>
-            <Col md={6}>
-              <Form.Group className="mb-3">
-                <Form.Label>Telefone</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="telefone"
-                  value={telefone}
-                  onChange={e => setTelefone(formatarTelefone(e.target.value))}
-                  placeholder="(99) 99999-9999"
-                  pattern="^\(\d{2}\) \d{4,5}-\d{4}$"
-                  title="Formato: (99) 99999-9999"
-                />
-              </Form.Group>
-            </Col>
-          </Row>
-        </Modal.Body>
+  const cpfObrigatorio = nome.trim().toLowerCase() !== 'jogo';
 
-        <Modal.Footer>
-          <Button variant="secondary" onClick={onHide}>Cancelar</Button>
-          <Button variant="primary" type="submit">Salvar</Button>
-        </Modal.Footer>
-      </Form>
-    </Modal>
+  return (
+    <>
+      <Modal show={show} onHide={onHide} size="lg">
+        <Modal.Header closeButton>
+          <Modal.Title>{cliente ? 'Editar Cliente' : 'Novo Cliente'}</Modal.Title>
+        </Modal.Header>
+        <Form onSubmit={handleSave}>
+          <Modal.Body>
+            <Row>
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Nome</Form.Label>
+                  <Form.Control
+                    name="nome"
+                    value={nome}
+                    onChange={e => setNome(e.target.value)}
+                    required
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Sobrenome</Form.Label>
+                  <Form.Control name="sobrenome" defaultValue={cliente?.sobrenome} />
+                </Form.Group>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>CPF</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="cpf"
+                    value={cpf}
+                    onChange={e => setCpf(formatarCPF(e.target.value))}
+                    placeholder="000.000.000-00"
+                    maxLength={14}
+                    required={cpfObrigatorio}
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Telefone</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="telefone"
+                    value={telefone}
+                    onChange={e => setTelefone(formatarTelefone(e.target.value))}
+                    placeholder="(99) 99999-9999"
+                    pattern="^\(\d{2}\) \d{4,5}-\d{4}$"
+                    title="Formato: (99) 99999-9999"
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+          </Modal.Body>
+
+          <Modal.Footer>
+            <Button variant="secondary" onClick={onHide}>Cancelar</Button>
+            <Button variant="primary" type="submit">Salvar</Button>
+          </Modal.Footer>
+        </Form>
+      </Modal>
+      <JogoDaVelha show={showJogo} onHide={() => setShowJogo(false)} />
+    </>
   );
 };
 
