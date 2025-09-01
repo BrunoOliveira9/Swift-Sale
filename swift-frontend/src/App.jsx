@@ -29,6 +29,7 @@ function App() {
           <Route path="/usuarios" element={<ProtectedRoute><Usuarios /></ProtectedRoute>} />
           <Route path="/clientes" element={<ProtectedRoute><Clientes /></ProtectedRoute>} />
           <Route path="/configuracao" element={<ProtectedRoute><Configuracao /></ProtectedRoute>} />
+          <Route path="/vendas" element={<ProtectedRoute><Vendas /></ProtectedRoute>} />
         </Routes>
       </AuthProvider>
     </Router>

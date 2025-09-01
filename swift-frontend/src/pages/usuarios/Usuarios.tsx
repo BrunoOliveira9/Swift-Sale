@@ -1,20 +1,21 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Container, Row, Col, Button, Table, InputGroup, FormControl } from 'react-bootstrap';
-import { FaPlus, FaSearch, FaEdit } from 'react-icons/fa';
+import { FaPlus, FaSearch, FaEdit, FaArrowLeft } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 import './Usuarios.css';
-import { UsuarioService } from '../../services/usuarios/usuarios-service.ts'
+import { UsuarioService } from '../../services/usuarios/usuarios-service.ts';
 import { Usuario } from '../../models/usuario.ts';
-import ModalEdicaoUsuario from '../../components/modal/ModalEdicaoUsuario.tsx'
+import ModalEdicaoUsuario from '../../components/modal/ModalEdicaoUsuario.tsx';
 
 const _usuarioService = new UsuarioService();
 
-const Usuarios = () => {
+const Usuarios: React.FC = () => {
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
-  const [mostrarSenha, setMostrarSenha] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [usuarioAtual, setUsuarioAtual] = useState<Usuario | null>(null);
   const [termoBusca, setTermoBusca] = useState('');
-  const [telefone, setTelefone] = useState(usuarioAtual?.telefone || '');
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUsuarios = async () => {
@@ -25,11 +26,9 @@ const Usuarios = () => {
         console.error("Erro ao buscar usuários:", error);
       }
     };
-    
     fetchUsuarios();
   }, []);
 
-  // Define a função handleShowModal para abrir o modal, podendo receber um usuário para edição
   const handleShowModal = (usuario: Usuario | null = null) => {
     setUsuarioAtual(usuario);
     setShowModal(true);
@@ -40,36 +39,14 @@ const Usuarios = () => {
     setUsuarioAtual(null);
   };
 
-  const formatarTelefone = (valor: string) => {
-    // Remove tudo que não for dígito
-    valor = valor.replace(/\D/g, '');
-
-    // Formata: (99) 99999-9999 ou (99) 9999-9999
-    if (valor.length > 10) {
-      valor = valor.replace(/^(\d{2})(\d{5})(\d{4}).*/, '($1) $2-$3');
-    } else if (valor.length > 5) {
-      valor = valor.replace(/^(\d{2})(\d{4})(\d{0,4}).*/, '($1) $2-$3');
-    } else if (valor.length > 2) {
-      valor = valor.replace(/^(\d{2})(\d{0,5})/, '($1) $2');
-    } else if (valor.length > 0) {
-      valor = valor.replace(/^(\d*)/, '($1');
-    }
-
-    return valor;
-  };
-
-  useEffect(() => {
-    setTelefone(usuarioAtual?.telefone || '');
-  }, [usuarioAtual]);
-
   const handleSave = async (dadosUsuario: Partial<Usuario>) => {
     try {
       if (usuarioAtual && usuarioAtual.id) {
         const usuarioAtualizado = await _usuarioService.updateUser(String(usuarioAtual.id), dadosUsuario);
-        setUsuarios((prev) => prev.map(u => (u.id === usuarioAtual.id ? usuarioAtualizado : u)));
+        setUsuarios(prev => prev.map(u => u.id === usuarioAtual.id ? usuarioAtualizado : u));
       } else {
         const novoUsuario = await _usuarioService.createUser(dadosUsuario);
-        setUsuarios((prev) => [...prev, novoUsuario]);
+        setUsuarios(prev => [...prev, novoUsuario]);
       }
       handleCloseModal();
     } catch (error) {
@@ -77,21 +54,27 @@ const Usuarios = () => {
     }
   };
 
-  
   const usuariosFiltrados = useMemo(() =>
-    usuarios.filter(p =>
-      p.nome.toLowerCase().includes(termoBusca.toLowerCase()) ||
-      p.sobrenome?.toLowerCase().includes(termoBusca.toLowerCase()) ||
-      p.username.toLowerCase().includes(termoBusca.toLowerCase())
+    usuarios.filter(u =>
+      u.nome.toLowerCase().includes(termoBusca.toLowerCase()) ||
+      u.sobrenome?.toLowerCase().includes(termoBusca.toLowerCase()) ||
+      u.username.toLowerCase().includes(termoBusca.toLowerCase())
     ), [usuarios, termoBusca]);
 
   return (
     <Container fluid className="mt-4">
+      {/* Cabeçalho */}
       <Row className="align-items-center mb-4">
         <Col>
           <h1 className="h3">Gerenciamento de Usuários</h1>
         </Col>
         <Col className="text-end">
+          {/* Botão de Voltar */}
+          <Button variant="secondary" className="me-2" onClick={() => navigate('/inicio')}>
+            <FaArrowLeft className="me-1" /> Voltar
+          </Button>
+
+          {/* Botão de Novo Usuário */}
           <Button variant="primary" onClick={() => handleShowModal()}>
             <FaPlus className="me-2" />
             Novo Usuário
@@ -99,6 +82,7 @@ const Usuarios = () => {
         </Col>
       </Row>
 
+      {/* Campo de busca */}
       <InputGroup className="mb-3" style={{ maxWidth: '400px' }}>
         <InputGroup.Text><FaSearch /></InputGroup.Text>
         <FormControl
@@ -108,6 +92,7 @@ const Usuarios = () => {
         />
       </InputGroup>
 
+      {/* Tabela de usuários */}
       <Table striped bordered hover responsive>
         <thead>
           <tr>
@@ -119,14 +104,14 @@ const Usuarios = () => {
           </tr>
         </thead>
         <tbody>
-          {usuariosFiltrados.map((usuario) => (
-            <tr key={usuario.id}>
-              <td>{usuario.nome}</td>
-              <td>{usuario.sobrenome}</td>
-              <td>{usuario.username}</td>
-              <td>{usuario.email}</td>
+          {usuariosFiltrados.map(u => (
+            <tr key={u.id}>
+              <td>{u.nome}</td>
+              <td>{u.sobrenome}</td>
+              <td>{u.username}</td>
+              <td>{u.email}</td>
               <td className="text-center">
-                <Button variant="outline-primary" size="sm" className="me-2" onClick={() => handleShowModal(usuario)}>
+                <Button variant="outline-primary" size="sm" className="me-2" onClick={() => handleShowModal(u)}>
                   <FaEdit />
                 </Button>
               </td>
@@ -134,6 +119,8 @@ const Usuarios = () => {
           ))}
         </tbody>
       </Table>
+
+      {/* Modal de edição/novo usuário */}
       <ModalEdicaoUsuario
         show={showModal}
         onHide={handleCloseModal}
