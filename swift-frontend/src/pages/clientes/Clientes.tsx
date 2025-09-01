@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Container, Row, Col, Button, Table, InputGroup, FormControl } from 'react-bootstrap';
-import { FaPlus, FaSearch, FaEdit } from 'react-icons/fa';
+import { FaPlus, FaSearch, FaEdit, FaArrowLeft } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 import './Clientes.css';
 import { ClienteService } from '../../services/clientes/clientes-service.ts'
 import { Cliente } from '../../models/cliente.ts';
@@ -13,6 +14,8 @@ const Clientes = () => {
   const [showModal, setShowModal] = useState(false);
   const [clienteAtual, setClienteAtual] = useState<Cliente | null>(null);
   const [termoBusca, setTermoBusca] = useState('');
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchClientes = async () => {
@@ -68,6 +71,9 @@ const Clientes = () => {
           <h1 className="h3">Gerenciamento de Clientes</h1>
         </Col>
         <Col className="text-end">
+          <Button variant="secondary" className="me-2" onClick={() => navigate('/inicio')}>
+            <FaArrowLeft className="me-1" /> Voltar
+          </Button>
           <Button variant="primary" onClick={() => handleShowModal()}>
             <FaPlus className="me-2" />
             Novo Cliente

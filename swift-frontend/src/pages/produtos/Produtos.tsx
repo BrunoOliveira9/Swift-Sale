@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Container, Row, Col, Button, Form, Table, Modal, InputGroup, FormControl, Badge } from 'react-bootstrap';
-import { FaPlus, FaSearch, FaEdit, FaTrash } from 'react-icons/fa';
+import { FaPlus, FaSearch, FaEdit, FaTrash, FaArrowLeft } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 import './Produtos.css';
 import { ProdutosService } from '../../services/produtos/produtos-service.ts'
 import { Produto } from '../../models/produto.ts';
@@ -15,6 +16,8 @@ const Produtos = () => {
   const [showModal, setShowModal] = useState(false);
   const [produtoAtual, setProdutoAtual] = useState<Produto | null>(null);
   const [termoBusca, setTermoBusca] = useState('');
+
+  const navigate = useNavigate();
 
   const fetchProdutos = async () => {
     try {
@@ -115,6 +118,9 @@ const Produtos = () => {
           <h1 className="h3">Gerenciamento de Produtos</h1>
         </Col>
         <Col className="text-end">
+          <Button variant="secondary" className="me-2" onClick={() => navigate('/inicio')}>
+            <FaArrowLeft className="me-1" /> Voltar
+          </Button>
           <Button variant="primary" onClick={() => handleShowModal()}>
             <FaPlus className="me-2" />
             Novo Produto
