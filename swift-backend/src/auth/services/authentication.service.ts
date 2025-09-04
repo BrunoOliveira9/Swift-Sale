@@ -68,4 +68,48 @@ export class AuthenticationService {
     async getStatus() {
       return { authenticated: true };
     }
+
+    async getMe(res: Response) {
+        const token = res.locals.token;
+        if (!token) {
+            throw new UnauthorizedException('Token não encontrado');
+        }
+
+        try {
+            const payload = this._jwtService.verify(token);
+            const userId = payload.sub;
+
+            const user = await this.prisma.cad_usuario.findUnique({
+                where: { id: userId },
+                select: {
+                    id: true,
+                    nome: true,
+                    sobrenome: true,
+                    username: true,
+                    email: true,
+                    cargo: true,
+                    nivel_acesso: true,
+                },
+            });
+
+            if (!user) {
+                throw new UnauthorizedException('Usuário não encontrado');
+            }
+
+            // Descriptografa o username antes de retornar
+            const decryptedUsername = this._cryptoService.decrypt(user.username);
+
+            return {
+                id: user.id,
+                nome: user.nome,
+                sobrenome: user.sobrenome,
+                username: decryptedUsername,
+                email: user.email,
+                cargo: user.cargo,
+                nivel_acesso: user.nivel_acesso,
+            };
+        } catch (error) {
+            throw new UnauthorizedException('Token inválido ou expirado');
+        }
+    }
 }

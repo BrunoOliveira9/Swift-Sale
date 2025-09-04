@@ -69,7 +69,7 @@ function ProductSearchModal({
                 className="list-group-item list-group-item-action"
                 onClick={() => handleProductClick(product.codigo_barras)}
               >
-                {product.nome} - <strong>R${product.preco_venda.toFixed(2)}</strong>
+                {product.nome} - <strong>R${Number(product.preco_venda).toFixed(2)}</strong>
                 <br />
                 <small>Código: {product.codigo_barras}</small>
               </button>

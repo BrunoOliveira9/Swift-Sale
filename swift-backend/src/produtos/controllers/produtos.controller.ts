@@ -17,6 +17,11 @@ export class ProdutosController {
     return this.produtosService.findAll();
   }
 
+  @Get(':codigo_barras')
+  findProductBarcode(@Param('codigo_barras') barcode: string) {
+    return this.produtosService.findProductByBarcode(barcode);
+  }
+
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.produtosService.findOne(id);

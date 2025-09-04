@@ -7,8 +7,8 @@ export type Produto = {
     descricao?: string,
     categoria: string,
     unidade_medida: UnidadeMedida
-    preco_venda: number,
-    preco_custo: number,
+    preco_venda: number | string,
+    preco_custo: number | string,
     estoque_atual: number,
     estoque_minimo: number
 }
