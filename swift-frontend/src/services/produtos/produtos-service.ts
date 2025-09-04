@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { GenericCrudService } from '../crud/generic-crud.ts'
 import { Produto } from '../../models/produto'
 

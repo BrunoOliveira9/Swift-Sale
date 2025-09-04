@@ -26,4 +26,10 @@ export class AuthenticationController {
    async getStatus() {
      return this._authenticationService.getStatus();
    }
+
+   @Get('me')
+   @UseGuards(AuthGuard)
+   async getMe(@Res({ passthrough: true }) res: Response) {
+     return this._authenticationService.getMe(res);
+   }
 }

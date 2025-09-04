@@ -9,18 +9,19 @@ interface CartListProps {
 
 function CartList({ items, onRemoveItem }: CartListProps) {
   const CartItem = ({ item }: { item: Produto & { quantity: number } }) => {
-    const subtotal = item.preco_venda * item.quantity; // usa preco_venda
+    const precoVenda = Number(item.preco_venda);
+    const subtotal = precoVenda * item.quantity;
     return (
       <tr>
         <td>{item.nome}</td>
-        <td className="text-end">R${item.preco_venda.toFixed(2)}</td>
+        <td className="text-end">R${precoVenda.toFixed(2)}</td>
         <td className="text-center">{item.quantity}</td>
         <td className="text-end fw-bold">R${subtotal.toFixed(2)}</td>
         <td className="text-center">
           <Button
             variant="danger"
             size="sm"
-            onClick={() => onRemoveItem(item.codigo_barras)} // usa codigo_barras
+            onClick={() => onRemoveItem(item.codigo_barras)}
           >
             X
           </Button>

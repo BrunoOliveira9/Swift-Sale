@@ -30,6 +30,12 @@ export class ProdutosService {
     return produto;
   }
 
+  async findProductByBarcode(barcode: string) {
+    const produto = await this.prisma.cad_produto.findUnique({ where: { codigo_barras: barcode } });
+    if (!produto) throw new NotFoundException(`Produto com código de barras ${barcode} não encontrado`);
+    return produto;
+  }
+
   async update(idProduct: number, data: UpdateProdutoDto) {
     await this.findOne(idProduct);
 

@@ -22,6 +22,7 @@ export class AuthGuard implements CanActivate {
         
         // pega o token do cookie
         const request = context.switchToHttp().getRequest();
+        const response = context.switchToHttp().getResponse();
         const token = request.cookies['token'];
 
         if (!token) {
@@ -32,6 +33,10 @@ export class AuthGuard implements CanActivate {
         if (!isValid) {
           throw new ForbiddenException("Token inválido");
         }
+
+        // Armazena o token no res.locals para uso posterior
+        response.locals = response.locals || {};
+        response.locals.token = token;
 
         return true;
       }
