@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { GenericCrudService } from '../crud/generic-crud.ts';
 import showToast from '../../components/toast/Toast.jsx';
+import { useNavigate } from 'react-router-dom';
 
 interface Login {
     username: string;
@@ -35,6 +36,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     const checkAuthStatus = async () => {
       try {
@@ -46,7 +49,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setIsLoading(false);
       }
     };
+
     checkAuthStatus();
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.shiftKey && e.key.toLowerCase() === "p") {
+        navigate("/vendas");
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
   const login = async (data: Login): Promise<boolean> => {
